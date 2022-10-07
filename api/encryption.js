@@ -28,7 +28,7 @@ User.login = async (value) => {
 }
 
 async function signup (req, res, next) {
-  const HashPassword = await hashPassword(req.body.password)
+  const HashPassword = await hashPassword(req.body.Password)
 
   const user = new User({
     ContactNo: req.body.ContactNo,
@@ -51,8 +51,8 @@ async function login (req, res, next) {
   try {
     const user = await User.login(req.body.EmailId)
     if (user) {
-      const validPass = await validatePassword(req.body.password, user.password)
-      if (!validPass) return res.status(400).send('Mobile/Email or Password is wrong')
+      const validPass = await validatePassword(req.body.Password, user.Password)
+      if (!validPass) return res.status(400).send('Email or Password is wrong')
 
       const token = jwt.sign({ id: user.EmailId, isAdmin: user.isAdmin }, process.env.TOKEN_SECRET)
       res.header('auth-token', token).send({ token })
