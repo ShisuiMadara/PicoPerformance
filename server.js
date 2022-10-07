@@ -31,7 +31,8 @@ app.all("*", async (req, res, func) => {
                 await api.execute(req, res);
             }
             catch(err){
-                console.log(`Error: ${err.message}`)
+                console.log(`Error: ${err.message}`);
+                res.status(400).send("Error occured in backend!!");
             }
         }
         catch(err){
