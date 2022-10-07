@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 
-async function getList (req, res) {
+async function getAll (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
     user: 'pico',
@@ -14,7 +14,7 @@ async function getList (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Employees WHERE isAdmin = 1 AND isBlocked = 0'
+    const sql = 'SELECT * FROM Employees WHERE isAdmin = 0'
     con.query(sql, function (erro, result) {
       if (erro) {
         res.status(400).send('Unknown Error')
@@ -26,4 +26,4 @@ async function getList (req, res) {
   })
 }
 
-exports.execute(getList)
+exports.execute(getAll)
