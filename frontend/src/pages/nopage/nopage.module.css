@@ -1,0 +1,12 @@
+.messageConatiner {
+    font-size: xx-large;
+    font-family: 'Courier New', Courier, monospace;
+}
+.nopageContainer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ecf0f1;
+}
