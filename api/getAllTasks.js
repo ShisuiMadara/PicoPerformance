@@ -10,21 +10,21 @@ async function getAllTasks (req, res) {
 
   req = req.body
 
-  const find = req.EmailId
+  const find = req.EmployeeId
   con.connect((err) => {
     if (err) {
       res.status(400).send('Datbase Error')
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Employee WHERE EmailId = "' + find + '"'
+    const sql = 'SELECT * FROM Tasks WHERE EmployeeId = "' + find + '"'
 
     con.query(sql, function (erro, result) {
       if (erro) {
         res.status(400).send('Unknown Error')
         return 0
       }
-      if (sql.length === 0) {
+      if (result.length === 0) {
         res.status(404).send('No record in database')
       }
       console.log('Number of records inserted: ' + result.affectedRows)
