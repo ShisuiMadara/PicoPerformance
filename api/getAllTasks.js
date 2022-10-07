@@ -33,4 +33,4 @@ async function getAllTasks (req, res) {
   })
 }
 
-exports.execute(getAllTasks)
+exports.execute = getAllTasks
