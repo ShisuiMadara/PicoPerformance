@@ -14,7 +14,7 @@ async function getAll (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Employees WHERE isAdmin = 0'
+    const sql = 'SELECT * FROM Employee WHERE IsAdmin = 0'
     con.query(sql, function (erro, result) {
       if (erro) {
         res.status(400).send('Unknown Error')
@@ -26,4 +26,4 @@ async function getAll (req, res) {
   })
 }
 
-exports.execute(getAll)
+exports.execute = getAll
