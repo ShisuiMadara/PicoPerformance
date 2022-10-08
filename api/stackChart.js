@@ -1,3 +1,4 @@
+const { connect } = require('http2')
 const mysql = require('mysql')
 
 async function filter (req, res) {
@@ -33,47 +34,39 @@ async function filter (req, res) {
 
   console.log(startDate)
   console.log(endDate)
-
   con.connect(async (err) => {
     if (err) {
       res.status(400).send('Datbase Error')
       return 0
     }
+    var x = 0
     console.log('Connected!')
-    var sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL 0 DAY) AND DATE_ADD("' + endDate + '", INTERVAL 0 DAY) AND TaskType="break" AND EmployeeId=' + req.EmployeeId
-    var resobj = []
-    for (i = 0; i < 7; i++){
-      resobj.push({})
-      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL '+ i + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL '+ i + ' DAY) AND TaskType="Break" AND EmployeeId=' + req.EmployeeId
-      con.query(sql, async function (erro, result) {
-        if (erro) {
+    const resobj = {}
+    var sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Break" AND EmployeeId=' + req.EmployeeId
+    con.query(sql, (err, result)=>{
+      if (err){
+        res.status(400).send('Unknown Error')
+        return
+      }
+      resobj.Break = result
+      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Meeting" AND EmployeeId=' + req.EmployeeId
+      con.query(sql, (err, result)=>{
+        if (err){
           res.status(400).send('Unknown Error')
-          return 0
+          return
         }
-        
-        resobj[i].Break = result
+        resobj.Meeting = result
+        sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Work" AND EmployeeId=' + req.EmployeeId
+        con.query(sql, (err, result)=>{
+          if (err){
+            res.status(400).send('Unknown Error')
+            return
+          }
+          resobj.Work = result
+          res.send(resobj)
+        })
       })
-      console.log(resobj[i].Break)
-      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL + '+ i + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL + '+ i + ' DAY) AND TaskType="Meeting" AND EmployeeId=' + req.EmployeeId
-       con.query(sql, async function (erro, result) {
-        if (erro) {
-          res.status(400).send('Unknown Error')
-          return 0
-        }
-        
-        resobj[i].Meeting = result
-      })
-      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL + '+ i + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL + '+ i + ' DAY) AND TaskType="Work" AND EmployeeId=' + req.EmployeeId
-       con.query(sql, async function (erro, result) {
-        if (erro) {
-          res.status(400).send('Unknown Error')
-          return 0
-        }
-        resobj[i].Work = result
-      })
-      
-    } 
-    res.send(resobj)
+    })
   })
 }
 
