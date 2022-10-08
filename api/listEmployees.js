@@ -1,6 +1,11 @@
 const mysql = require('mysql')
 
 async function getAll (req, res) {
+  console.log(req.user)
+  if (req.user.isAdmin == 0) {
+    res.status(401).send('Access Denied')
+    return
+  }
   const con = mysql.createConnection({
     host: 'localhost',
     user: 'pico',

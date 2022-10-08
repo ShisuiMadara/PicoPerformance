@@ -13,8 +13,9 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(cors())
 app.use(bodyParser.json())
+
 app.use((req, res, next) => {
-  if (req.path == '/api/login'){
+  if (req.path == '/api/login' || req.path == '/api/sendinglink'){
     next()
     return
   }
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
     res.status(400).send('Invalid Token')
   }
 })
+
 app.set('view engine', 'ejs')
 
 // accept all requests
