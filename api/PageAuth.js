@@ -8,12 +8,18 @@ function loggedIn (req, res, next) {
     if (token.startsWith('Bearer ')) {
       token = token.slice(7, token.length).trimLeft()
     }
-    const verified = jwt.verify(token, process.env.TOKEN_SECRET)
-    if (verified.user_type_id === false) {
-      const reqUrl = req.baseUrl + req.route.path
-      if (reqUrl.includes('users/:id') && parseInt(req.params.id) !== verified.id) {
-        return res.status(401).send('Unauthorized!')
+    const verified = jwt.verify(token, process.env.JWT_SECRET)
+    if (verified.isAdmin == 0) {
+      if (req.EmployeeId){
+        if (req.EmployeeId != verified.Eid) {
+          return res.status(401).send('Access Denied')
+        }
       }
+      if (req.EmailId){
+        if (req.EmailId != verified.id) {
+          return res.status(401).send('Access Denied')
+        }
+      } 
     }
     req.user = verified
     next()

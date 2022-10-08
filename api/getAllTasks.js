@@ -1,3 +1,4 @@
+const { Console } = require('console')
 const mysql = require('mysql')
 
 async function getAllTasks (req, res) {
