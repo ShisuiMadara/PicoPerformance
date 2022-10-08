@@ -1,3 +1,17 @@
 .icon{
-    color: white;
+    color: #F4F4F4;
+}
+.dashboardContainer {
+    background-color: #F4F4F4;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.menu :hover {
+    background: #F0A500;
+}
+.menuItem :hover {
+    background: none;
 }

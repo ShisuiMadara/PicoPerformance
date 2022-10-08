@@ -23,25 +23,19 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Profile from "../../components/profile/Profile";
 
-import Admin from "../../components/Admin/Admin";
-import User from "../../components/User/User";
-
 import styles from "./dashboard.module.css";
 import CreateUser from "../../components/createUser/createUser";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   // set variables and hooks
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [location, setLocation] = React.useState("My Profile");
-  const [auth, setAuth] = React.useState(true);
+  const [location, setLocation] = React.useState("Tasks");
   const [userdata, setUserdata] = React.useState({});
-  const loginStatus = sessionStorage.getItem("loginStatus");
-  const token = sessionStorage.getItem("authToken");
-  const darkTheme = createTheme({
+  const [screenWidth, setScreenWidth] = React.useState(window.innerWidth > 768 ? window.innerWidth / 3 : window.innerWidth);
+  const Theme = createTheme({
     palette: {
       primary: {
-        main: "#F0A500",
+        main: "#CF7500",
       },
       secondary: {
         main: "#CF7500",
@@ -52,10 +46,10 @@ const Dashboard = () => {
   // handler functions
   const handleContent = (key) => {
     if (key === "Home") {
-      window.location.replace("/");
+      window.location.href = "/";
     } else if (key === "Logout") {
       sessionStorage.clear();
-      window.location.replace("/");
+      window.location.href = "/";
     } else {
       setLocation(key);
       setOpen(false);
@@ -68,21 +62,47 @@ const Dashboard = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const locations = {
-    Home: [, "/"],
-    "My Profile": ["", <Profile userdata={userdata} />],
-    "Create User": ["", <CreateUser />],
-    Logout: ["", "Logout"],
-  };
+
+  // validate user
   const valid = true;
   const usertype = "admin";
+
+  // define dashboard tabs
+  // default ui for admin
+  let locations = {
+    Home:           [ "", "/"],
+    "Tasks":        [ "", <CreateUser />],
+    "Create User":  [ "", <CreateUser />],
+    "Profile":      [ "", <Profile userdata={userdata} />],
+    Logout:         [ "", "Logout"],
+  };
+  if(usertype === 'employee') {
+    // changed ui for employee
+    locations = {
+      Home:           [ "", "/"],
+      "Tasks":        [ "", <CreateUser />],
+      "Profile":      [ "", <Profile userdata={userdata} />],
+      Logout:         [ "", "Logout"],
+    };
+  }
+
+  // eventListeners
+  window.addEventListener("resize", function(event) {
+    let width = window.innerWidth;
+    if(width > 768) {
+      width = width / 3;
+    }
+    setScreenWidth(width);
+  })
+
+  // return component
   if (valid) {
-    if (usertype === "admin") {
+    if (usertype === "admin" || usertype === 'employee') {
       return (
-        <ThemeProvider theme={darkTheme}>
-          <Box sx={{ display: "flex" }}>
+        <ThemeProvider theme={Theme}>
+          <Box className={styles.dashboardContainer} sx={{ display: "flex" }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            <AppBar width={screenWidth} position="fixed" open={open}>
               <Toolbar>
                 <IconButton
                   color="inherit"
@@ -95,7 +115,7 @@ const Dashboard = () => {
                 </IconButton>
                 <Breadcrumbs
                   aria-label="breadcrumb"
-                  color="white"
+                  color="#F4F4F4"
                   variant="h6"
                   separator=">"
                   padding={1}
@@ -111,12 +131,13 @@ const Dashboard = () => {
             </AppBar>
             <Drawer
               sx={{
-                width: drawerWidth,
+                width: screenWidth,
                 flexShrink: 0,
                 "& .MuiDrawer-paper": {
-                  width: drawerWidth,
+                  width: screenWidth,
                   boxSizing: "border-box",
-                },
+                  background: '#F4F4F4'
+                }
               }}
               variant="persistent"
               anchor="left"
@@ -128,25 +149,28 @@ const Dashboard = () => {
                 </IconButton>
               </DrawerHeader>
               <Divider />
-              <List>
-                {Object.keys(locations).map((key) => (
-                  <ListItem
-                    key={key}
-                    Padding={1}
-                    onClick={() => {
-                      handleContent(key);
-                    }}
-                  >
-                    <ListItemButton>
-                      <ListItemIcon>{locations[key][0]}</ListItemIcon>
-                      <ListItemText primary={key} />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+              <List className={styles.menu}>
+                {
+                  Object.keys(locations).map((key) => (
+                    <ListItem
+                      className={styles.menuItem}
+                      key={key}
+                      Padding={1}
+                      onClick={() => {
+                        handleContent(key);
+                      }}
+                    >
+                      <ListItemButton sx={{textAlign: 'center'}}>
+                        <ListItemIcon>{locations[key][0]}</ListItemIcon>
+                        <ListItemText primary={key} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))
+                }
               </List>
               <Divider />
             </Drawer>
-            <Main open={open}>
+            <Main width={screenWidth} open={open}>
               <DrawerHeader />
               {locations[location][1]}
               {/* <Footer className={styles.foot} /> */}
@@ -156,21 +180,19 @@ const Dashboard = () => {
       );
     }
   } else {
-    window.location.replace("/");
+    window.location.href = "/";
   }
 };
 
-const drawerWidth = 425;
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" }) (
+  ({ theme, open, width }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft: `-${width}px`,
     ...(open && {
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
@@ -181,16 +203,14 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== "open", }) (({ theme, open, width }) => ({
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
+    width: `calc(100% - ${width}px)`,
+    marginLeft: `${width}px`,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
