@@ -7,15 +7,15 @@ async function sendEmail (email, token) {
   // This is your API key that you retrieve from www.mailgun.com/cp (free up to 10K monthly emails)
   const auth = {
     auth: {
-      api_key: '381f2624-44ec0801',
-      domain: 'sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org'
+      api_key: '5ec105ebff13bd8e38ff68b3067b575e-381f2624-44ec0801',
+      domain: 'postmaster@sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org'
     }
   }
 
   const nodemailerMailgun = nodemailer.createTransport(mg(auth))
 
   nodemailerMailgun.sendMail({
-    from: 'picoPerformance@gmail.com',
+    from: '2020ucs0090@iitjammu.ac.in',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
     html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
