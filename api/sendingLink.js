@@ -27,25 +27,41 @@ async function sendEmail (email, token) {
   //   }
   // })
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.mailgun.org',
-    port: 587,
-    auth: {
-      user: 'postmaster@sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org',
-      pass: '1d44e38354a64d4c0a4c6da9ccbab793-381f2624-5d0adc01'
-    }
-  })
+  // const transporter = nodemailer.createTransport({
+  //   host: 'smtp.mailgun.org',
+  //   port: 587,
+  //   auth: {
+  //     user: 'postmaster@sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org',
+  //     pass: '1d44e38354a64d4c0a4c6da9ccbab793-381f2624-5d0adc01'
+  //   }
+  // })
 
-  const info = await transporter.sendMail({
-    from: '2020ucs0090@iitjammu.ac.in.com',
+  // const info = await transporter.sendMail({
+  //   from: 'picoPerformance@gmail.com',
+  //   to: email,
+  //   subject: 'Reset Password Link - picoPerformance',
+  //   html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
+  // })
+
+  // console.log('Message sent: %s', info.messageId)
+
+  // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
+
+  const mailgun = require('mailgun-js')
+  const DOMAIN = 'sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org'
+  const ApiKey = '5ec105ebff13bd8e38ff68b3067b575e-381f2624-44ec0801'
+  const mg = mailgun({ apiKey: ApiKey, domain: DOMAIN })
+  const data = {
+    from: 'Excited User <me@samples.mailgun.org>',
     to: email,
-    subject: 'Reset Password Link - picoPerformance',
-    html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
+    subject: 'Hello',
+    text: 'Testing some Mailgun awesomness!'
+  }
+  mg.messages().send(data, function (error, body) {
+    if (error) throw error
+
+    console.log(body)
   })
-
-  console.log('Message sent: %s', info.messageId)
-
-  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
 }
 
 function sendMailToEmail (req, res) {
