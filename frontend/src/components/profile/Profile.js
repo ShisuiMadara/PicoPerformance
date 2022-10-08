@@ -13,16 +13,15 @@ function capitalize( value){
 
 export default function Profile(props){
     const sampledata = {
+        'Employee Id' : "Ashutosh Gangwar",
         'Name' : "Ashutosh Gangwar",
         'Eamil' : "Ashutosh Gangwar",
-        'Contact' : "Ashutosh Gangwar",
-        'Password' : "Ashutosh Gangwar",
-        'Employee Id' : "Ashutosh Gangwar"
+        'Contact' : "Ashutosh Gangwar"
     }
     const formArray = {
         'Email' : "text",
         'Contact' : 'phone',
-        'Password' : "password",
+        'Password' : "password"
     }
     const HandleInput = (event) => {
         let elements = document.getElementsByClassName("ProfileInputs");
