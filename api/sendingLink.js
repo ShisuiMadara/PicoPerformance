@@ -3,16 +3,14 @@ const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
-  const testAccount = await nodemailer.createTestAccount()
-
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
+    host: 'smtp.office365.com',
     port: 587,
-    secure: false,
+    secure: 'STARTTLS',
     auth: {
-      user: testAccount.user,
-      pass: testAccount.pass
+      user: process.env.UserEmail,
+      pass: process.env.UserPassword
     }
   })
 
@@ -24,9 +22,7 @@ async function sendEmail (email, token) {
   })
 
   console.log('Message sent: %s', info.messageId)
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
-  // Preview only available when sending through an Ethereal account
   console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
 }
 
