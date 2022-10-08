@@ -1,7 +1,8 @@
 import React from "react";
 import { Grid, TextField } from "@mui/material";
+import Button from '@mui/material/Button';
+
 import styles from "./createUser.module.css";
-import Button from '@material-ui/core/Button';
 
 export default function CreateUser(props){
         const formArray = {
@@ -29,7 +30,7 @@ export default function CreateUser(props){
             event.preventDefault();
             console.log(event.target);
         }
-     
+
         const [submitState, setSubmit] = React.useState(false);
         return(
             <>
@@ -49,7 +50,7 @@ export default function CreateUser(props){
                     <Grid container maxWidth sx = {{display: "flex"}} justifyContent="center" alligncontent="center">
                         <Grid item xs={12} md={6} lg = {4} padding = {1}>
                             {
-                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained"  >Submit</Button>):(<Button className={styles.submitButton}  variant="outlined">Submit</Button>)
+                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained">Submit</Button>):(<Button className={styles.submitButton} variant="outlined">Submit</Button>)
                             }
                         </Grid>
                     </Grid>
