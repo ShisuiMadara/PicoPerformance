@@ -23,9 +23,10 @@ CREATE TABLE Tasks(
 );
 
 CREATE TABLE Tokens(
-    EmployeeId int,
+    EmployeeId int PRIMARY KEY,
     EmailId VARCHAR(100) UNIQUE,
-    Token VARCHAR(50)
+    Token VARCHAR(50),
+    CONSTRAINT FK4 FOREIGN KEY (EmployeeId) REFERENCES Employee(EmployeeId)
 );
 
 drop TABLE Tasks;
