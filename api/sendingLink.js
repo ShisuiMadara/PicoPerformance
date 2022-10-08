@@ -3,7 +3,7 @@ const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
-  const transporter = nodemailer.nodemailer.createTransport('SMTP', {
+  const transporter = nodemailer.createTransport('SMTP', {
     host: 'yourserver.com',
     port: 25,
     auth: {
@@ -11,7 +11,7 @@ async function sendEmail (email, token) {
       pass: 'password'
     }
   })
-
+  console.log('c')
   const mailOptions = {
     from: 'picoPerformance@gmail.com',
     to: email,
@@ -66,7 +66,6 @@ function sendMailToEmail (req, res) {
 
     if (result[0].EmailId.length > 0) {
       const token = randtoken.generate(20)
-      console.log('cc')
       const sent = sendEmail(email, token)
       const dataa = [[result[0].EmployeeId, email, token]]
       if (sent) {
