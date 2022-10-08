@@ -1,6 +1,11 @@
 const mysql = require('mysql')
+const bcrypt = require('bcrypt')
 
-async function isValid (req, res) {
+async function hashPassword (Password) {
+  return await bcrypt.hash(Password)
+}
+
+async function changePassword (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
     user: 'pico',
@@ -9,6 +14,8 @@ async function isValid (req, res) {
   })
 
   req = req.body
+  const newPassword = req.Password
+  const newHashedPassword = hashPassword(newPassword)
   const id = req.EmailId
 
   con.connect((err) => {
@@ -17,21 +24,21 @@ async function isValid (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Employee WHERE EmailId = "' + id + '"'
+    const sql = 'UPDATE Employee SET PasswordHash = "' + newHashedPassword + '" WHERE EmailId = "' + id + '"'
     con.query(sql, async function (erro, result) {
       if (erro) {
         res.status(400).send('Unknown Error')
         return 0
       }
 
-      if (result.length === 0) {
+      if (result.affectedRows === 0) {
         console.log('Invalid user')
-        res.status(404).send(false)
+        res.status(404).send('Query failed')
       }
 
-      res.send(true)
+      res.send('Success')
     })
   })
 }
 
-exports.execute = isValid
+exports.execute = changePassword

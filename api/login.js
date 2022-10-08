@@ -32,7 +32,7 @@ async function Login (req, res, value) {
         console.log(req.body.Password)
         const validPass = await validatePassword(req.body.Password, user.PasswordHash)
         if (!validPass) {
-          res.status(400).send('Mobile/Email or Password is wrong')
+          res.status(400).send('Email or Password is wrong')
           return 0
         }
         const token = jwt.sign({ id: user.EmailId, isAdmin: user.IsAdmin }, process.env.JWT_SECRET)
