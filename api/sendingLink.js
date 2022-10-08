@@ -3,27 +3,50 @@ const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
-  // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
-    host: 'smtp.office365.com',
-    port: 587,
-    secure: 'STARTTLS',
+    host: 'smtp.server.com', // <= your smtp server here
+    port: 2525, // <= connection port
+    // secure: true, // use SSL or not
     auth: {
-      user: process.env.UserEmail,
-      pass: process.env.UserPassword
+      user: 'userId', // <= smtp login user
+      pass: 'E73oiuoiC34lkjlkjlkjlkjA6Bok7DAD' // <= smtp login pass
     }
   })
 
-  const info = await transporter.sendMail({
+  const mailOptions = {
     from: 'picoPerformance@gmail.com',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
     html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
+  }
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error.message)
+    }
+    console.log('Message sent: %s', info.messageId)
   })
+  // const transporter = nodemailer.createTransport({
+  //   host: 'smtp.office365.com',
+  //   port: 589,
+  //   secure: true,
+  //   auth: {
+  //     user: process.env.UserEmail,
+  //     pass: process.env.UserPassword
+  //   }
+  // })
 
-  console.log('Message sent: %s', info.messageId)
+  // const info = await transporter.sendMail({
+  //   from: 'picoPerformance@gmail.com',
+  //   to: email,
+  //   subject: 'Reset Password Link - picoPerformance',
+  //   html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
+  // })
 
-  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
+  // console.log('Message sent: %s', info.messageId)
+
+  // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
 }
 
 function sendMailToEmail (req, res) {
@@ -49,7 +72,7 @@ function sendMailToEmail (req, res) {
       const dataa = [[result[0].EmployeeId, email, token]]
       if (sent) {
         con.query('Insert Into Tokens Values ?', [dataa], function (err, result) {
-          if (err){
+          if (err) {
             console.log(err.message)
           }
           res.write(result)
@@ -63,7 +86,7 @@ function sendMailToEmail (req, res) {
       res.status(404).send('EmailId not found. Kindly signUp.')
     }
 
-    //res.redirect('/')
+    // res.redirect('/')
     res.send()
   })
 }
