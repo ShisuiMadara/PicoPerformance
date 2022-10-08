@@ -35,7 +35,8 @@ async function Login (req, res, value) {
           res.status(400).send('Email or Password is wrong')
           return 0
         }
-        const token = jwt.sign({ id: user.EmailId, isAdmin: user.IsAdmin }, process.env.JWT_SECRET)
+  
+        const token = jwt.sign({ id: user.EmailId, Eid: user.EmployeeId, isAdmin: user.IsAdmin }, process.env.JWT_SECRET)
         res.header('auth-token', token).send({ token })
       }
     })

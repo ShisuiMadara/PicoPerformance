@@ -12,6 +12,7 @@ async function filter (req, res) {
 
   const startDate = req.StartDate
   const endDate = req.EndDate
+  const Usr = req.EmployeeId
 
   con.connect((err) => {
     if (err) {
@@ -19,7 +20,7 @@ async function filter (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + '" AND "' + endDate + '"'
+    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + '" AND "' + endDate + '" AND EmployeeId=' + Usr
 
     con.query(sql, function (erro, result) {
       if (erro) {

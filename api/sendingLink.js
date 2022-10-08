@@ -49,7 +49,7 @@ function sendMailToEmail (req, res) {
       const sent = sendEmail(email, token)
 
       if (sent) {
-        con.query('UPDATE Employee SET Token = "' + token + '" WHERE email ="' + email + '"', function (err, result) {
+        con.query('UPDATE Tokens SET Token = "' + token + '" WHERE EmailId ="' + email + '"', function (err, result) {
           if (err) throw err
           res.write(result)
         })
