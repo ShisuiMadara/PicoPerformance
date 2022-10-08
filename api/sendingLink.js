@@ -1,7 +1,7 @@
 const mysql = require('mysql')
 const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
-
+//done
 async function sendEmail (email, token) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.mailgun.org',
@@ -54,14 +54,23 @@ function sendMailToEmail (req, res) {
 
         console.log('Email sent successfully')
       } else {
-        res.status(400).send('Something went wrong. Kindly try again')
+        res.status(400).send({
+          message: 'Something went wrong. Kindly try again',
+          success: false
+        })
       }
     } else {
-      res.status(404).send('EmailId not found. Kindly signUp.')
+      res.status(404).send({
+        message: 'EmailId not found. Kindly signUp.',
+        success: false
+      })
     }
 
     // res.redirect('/')
-    res.send()
+    res.send({
+      message: 'Email with reset link has been sent',
+      success: true
+    })
   })
 }
 
