@@ -1,0 +1,20 @@
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.messageContainer {
+    font-size: medium;
+    color: #F4F4F4;
+    font-family: 'Courier New', Courier, monospace;
+}
+.loginButton {
+    font-size: medium !important;
+    padding: 10px 30px !important;
+    color: #F4F4F4 !important;
+    border-color: #F4F4F4 !important;
+}
+
+
