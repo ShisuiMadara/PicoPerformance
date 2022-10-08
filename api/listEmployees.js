@@ -19,7 +19,7 @@ async function getAll (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Employee WHERE IsAdmin = 0'
+    const sql = 'SELECT * FROM Employee WHERE IsAdmin = 0 ORDER BY StartTime'
     con.query(sql, function (erro, result) {
       if (erro) {
         res.status(400).send('Unknown Error')
