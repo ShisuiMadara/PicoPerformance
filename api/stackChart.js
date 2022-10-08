@@ -18,7 +18,6 @@ async function filter (req, res) {
   if (dayy.length === 1) dayy = '0' + dayy
   let comp2 = d.getFullYear() + '-' + mnth + '-' + dayy
 
-  const endDate = comp2
 
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   mnth = sevenDaysAgo.getMonth() + 1
@@ -28,7 +27,9 @@ async function filter (req, res) {
   if (dayy.length === 1) dayy = '0' + dayy
   comp2 = sevenDaysAgo.getFullYear() + '-' + mnth + '-' + dayy
 
-  const startDate = comp2
+  const startDate = comp2 + ' 00:00:00'
+  const endDate = comp2 + ' 23:59:59'
+
 
   console.log(startDate)
   console.log(endDate)
@@ -39,7 +40,7 @@ async function filter (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + ' 00:00:00' + '" AND "' + endDate + ' 23:59:59' + '" AND EmployeeId=' + req.EmployeeId
+    var sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL 0 DAY) AND DATE_ADD("' + endDate + '", INTERVAL 0 DAY) AND EmployeeId=' + req.EmployeeId
 
     con.query(sql, function (erro, result) {
       if (erro) {
