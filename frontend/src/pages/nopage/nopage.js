@@ -7,11 +7,11 @@ export default class NoPage extends React.Component {
     render() {
         return (
             <div style={{flexGrow: 1}}>
-            <Grid className={styles.nopageContainer} container spacing={5} style={{ display: 'flex' }} alignContent={"center"} alignItems={"center"}>
-                <Grid item xs={12} sm={6} textAlign={"right"}>
+            <Grid className={styles.nopageContainer} container spacing={1} style={{ display: 'flex' }} alignContent={"center"} alignItems={"center"}>
+                <Grid item xs={12} sm={6} textAlign={'center'}>
                     <img src={logo} height = "200vh" width = "auto" alt = "404" />
                 </Grid>
-                <Grid className={styles.messageConatiner} item xs={12} sm={6} textAlign={"left"}>
+                <Grid className={styles.messageConatiner} item xs={12} sm={6} textAlign={'center'}>
                     Oops, <br />page not found.
                 </Grid>
             </Grid>
