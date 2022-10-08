@@ -4,11 +4,10 @@ const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
   const transporter = nodemailer.createTransport('SMTP', {
-    host: 'yourserver.com',
-    port: 25,
+    service: 'SendPulse',
     auth: {
-      user: 'username',
-      pass: 'password'
+      user: process.env.UserEmail,
+      pass: process.env.UserPassword
     }
   })
   console.log('c')
