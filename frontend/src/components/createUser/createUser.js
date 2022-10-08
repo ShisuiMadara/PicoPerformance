@@ -1,6 +1,7 @@
 import React from "react";
-import { Grid, Avatar, Typography, Divider, TextField, Button } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import styles from "./createUser.module.css";
+import Button from '@material-ui/core/Button';
 
 export default function CreateUser(props){
         const formArray = {
@@ -16,7 +17,7 @@ export default function CreateUser(props){
             let elements = document.getElementsByClassName("ProfileInputs");
             for(let i = 0; i < elements.length; i++){
                 const value = elements[i].children[1].children[0].value;
-                if(value!="" && value!=null){
+                if(value !== "" && value!=null){
                     setSubmit(true);
                     return true;
                 }
@@ -39,7 +40,7 @@ export default function CreateUser(props){
                             Object.keys(formArray).map((key, index) =>{
                                 return(
                                     <Grid item sx={12} md={6} lg={6} px={3} py={4} key={key}>
-                                        <TextField className="ProfileInputs" name={key} type={formArray[key]} sx={{width: "100%"}}  onKeyUp={HandleInput} label={key} variant="outlined" />
+                                        <TextField className="ProfileInputs" name={key} type={formArray[key]} sx={{width: "100%"}}  onKeyUp={HandleInput} label={key} variant="outlined" focused />
                                     </Grid>
                                 );
                             })
@@ -48,7 +49,7 @@ export default function CreateUser(props){
                     <Grid container maxWidth sx = {{display: "flex"}} justifyContent="center" alligncontent="center">
                         <Grid item xs={12} md={6} lg = {4} padding = {1}>
                             {
-                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained">Submit</Button>):(<Button className={styles.submitButton} disabled variant="outlined">Submit</Button>)
+                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained"  >Submit</Button>):(<Button className={styles.submitButton}  variant="outlined">Submit</Button>)
                             }
                         </Grid>
                     </Grid>
