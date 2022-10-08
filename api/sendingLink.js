@@ -3,6 +3,7 @@ const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
+  console.log(process.env.EmailUser)
   const mail = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -43,14 +44,16 @@ function sendMailToEmail (req, res) {
 
     console.log(result[0])
 
-    if (result[0].email.length > 0) {
+    if (result[0].EmailId.length > 0) {
       const token = randtoken.generate(20)
-
+      console.log('cc')
       const sent = sendEmail(email, token)
-
+      const dataa = [[result[0].EmployeeId, email, token]]
       if (sent) {
-        con.query('UPDATE Tokens SET Token = "' + token + '" WHERE EmailId ="' + email + '"', function (err, result) {
-          if (err) throw err
+        con.query('Insert Into Tokens Values ?', [dataa], function (err, result) {
+          if (err){
+            console.log(err.message)
+          }
           res.write(result)
         })
 
@@ -62,7 +65,7 @@ function sendMailToEmail (req, res) {
       res.status(404).send('EmailId not found. Kindly signUp.')
     }
 
-    res.redirect('/')
+    //res.redirect('/')
     res.send()
   })
 }

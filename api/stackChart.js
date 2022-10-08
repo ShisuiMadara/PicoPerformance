@@ -39,7 +39,7 @@ async function filter (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + '" AND "' + endDate + '"'
+    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + ' 00:00:00' + '" AND "' + endDate + ' 23:59:59' + '" AND EmployeeId=' + req.EmployeeId
 
     con.query(sql, function (erro, result) {
       if (erro) {
