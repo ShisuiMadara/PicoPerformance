@@ -7,7 +7,7 @@ async function validatePassword (plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword)
 }
 
-Login = async (req, res, value) => {
+async function Login (req, res, value) {
   const con = mysql.createConnection({
     host: 'localhost',
     user: 'pico',
@@ -35,7 +35,6 @@ Login = async (req, res, value) => {
           res.status(400).send('Mobile/Email or Password is wrong')
           return 0
         }
-  
         const token = jwt.sign({ id: user.EmailId, isAdmin: user.IsAdmin }, process.env.JWT_SECRET)
         res.header('auth-token', token).send({ token })
       }
