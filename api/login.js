@@ -7,7 +7,7 @@ async function validatePassword (plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword)
 }
 
-Login = async (req, res, value) => {
+async function Login (req, res, value) {
   const con = mysql.createConnection({
     host: 'localhost',
     user: 'pico',
@@ -32,7 +32,7 @@ Login = async (req, res, value) => {
         console.log(req.body.Password)
         const validPass = await validatePassword(req.body.Password, user.PasswordHash)
         if (!validPass) {
-          res.status(400).send('Mobile/Email or Password is wrong')
+          res.status(400).send('Email or Password is wrong')
           return 0
         }
   
