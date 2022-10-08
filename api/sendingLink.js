@@ -3,13 +3,12 @@ const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.server.com', // <= your smtp server here
-    port: 2525, // <= connection port
-    // secure: true, // use SSL or not
+  const transporter = nodemailer.nodemailer.createTransport('SMTP', {
+    host: 'yourserver.com',
+    port: 25,
     auth: {
-      user: 'userId', // <= smtp login user
-      pass: 'E73oiuoiC34lkjlkjlkjlkjA6Bok7DAD' // <= smtp login pass
+      user: 'username',
+      pass: 'password'
     }
   })
 
