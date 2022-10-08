@@ -19,7 +19,7 @@ async function filter (req, res) {
   let comp2 = d.getFullYear() + '-' + mnth + '-' + dayy
 
 
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const sevenDaysAgo = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
   mnth = sevenDaysAgo.getMonth() + 1
   mnth = mnth.toString()
   if (mnth.length === 1) mnth = '0' + mnth
@@ -34,25 +34,46 @@ async function filter (req, res) {
   console.log(startDate)
   console.log(endDate)
 
-  con.connect((err) => {
+  con.connect(async (err) => {
     if (err) {
       res.status(400).send('Datbase Error')
       return 0
     }
     console.log('Connected!')
-    var sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL 0 DAY) AND DATE_ADD("' + endDate + '", INTERVAL 0 DAY) AND EmployeeId=' + req.EmployeeId
-
-    con.query(sql, function (erro, result) {
-      if (erro) {
-        res.status(400).send('Unknown Error')
-        return 0
-      }
-      if (result.length === 0) {
-        res.status(404).send('No record in database')
-      }
-      console.log('Number of records inserted: ' + result.affectedRows)
-      res.send(result)
-    })
+    var sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL 0 DAY) AND DATE_ADD("' + endDate + '", INTERVAL 0 DAY) AND TaskType="break" AND EmployeeId=' + req.EmployeeId
+    var resobj = []
+    for (i = 0; i < 7; i++){
+      resobj.push({})
+      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL '+ i + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL '+ i + ' DAY) AND TaskType="Break" AND EmployeeId=' + req.EmployeeId
+      con.query(sql, async function (erro, result) {
+        if (erro) {
+          res.status(400).send('Unknown Error')
+          return 0
+        }
+        
+        resobj[i].Break = result
+      })
+      console.log(resobj[i].Break)
+      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL + '+ i + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL + '+ i + ' DAY) AND TaskType="Meeting" AND EmployeeId=' + req.EmployeeId
+       con.query(sql, async function (erro, result) {
+        if (erro) {
+          res.status(400).send('Unknown Error')
+          return 0
+        }
+        
+        resobj[i].Meeting = result
+      })
+      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL + '+ i + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL + '+ i + ' DAY) AND TaskType="Work" AND EmployeeId=' + req.EmployeeId
+       con.query(sql, async function (erro, result) {
+        if (erro) {
+          res.status(400).send('Unknown Error')
+          return 0
+        }
+        resobj[i].Work = result
+      })
+      
+    } 
+    res.send(resobj)
   })
 }
 

@@ -37,7 +37,7 @@ async function sendEmail (email, token) {
   })
 
   const info = await transporter.sendMail({
-    from: 'picoPerformance@gmail.com',
+    from: '2020ucs0090@iitjammu.ac.in.com',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
     html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
