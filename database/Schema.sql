@@ -8,6 +8,7 @@ CREATE TABLE Employee(
     PasswordHash VARCHAR(128),
     IsBlocked BOOL DEFAULT FALSE,
     IsAdmin BOOL DEFAULT FALSE,
+    Token VARCHAR(100),
     PRIMARY KEY(EmployeeId)
 );
 

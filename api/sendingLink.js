@@ -2,7 +2,7 @@ const mysql = require('mysql')
 const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
-export async function sendEmail (email, token) {
+async function sendEmail (email, token) {
   const mail = nodemailer.createTransport({
     service: 'gmail',
     auth: {
