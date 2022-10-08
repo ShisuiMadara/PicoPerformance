@@ -1,6 +1,6 @@
 const { connect } = require('http2')
 const mysql = require('mysql')
-
+//done
 async function filter (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
@@ -36,7 +36,10 @@ async function filter (req, res) {
   console.log(endDate)
   con.connect(async (err) => {
     if (err) {
-      res.status(400).send('Datbase Error')
+      res.status(400).send({
+        success : false,
+        message : 'Datbase Error'
+      })
       return 0
     }
     var x = 0
@@ -45,25 +48,39 @@ async function filter (req, res) {
     var sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Break" AND EmployeeId=' + req.EmployeeId
     con.query(sql, (err, result)=>{
       if (err){
-        res.status(400).send('Unknown Error')
+        res.status(400).send({
+          success : false,
+          message : 'Unknown Error'
+        })
         return
       }
       resobj.Break = result
       sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Meeting" AND EmployeeId=' + req.EmployeeId
       con.query(sql, (err, result)=>{
         if (err){
-          res.status(400).send('Unknown Error')
+          res.status(400).send({
+            success : false,
+            message : 'Unknown Error'
+          })
           return
         }
         resobj.Meeting = result
         sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Work" AND EmployeeId=' + req.EmployeeId
         con.query(sql, (err, result)=>{
           if (err){
-            res.status(400).send('Unknown Error')
+            res.status(400).send({
+              success : false,
+              message : 'Unknown Error'
+            })
             return
           }
           resobj.Work = result
-          res.send(resobj)
+          res.send({
+            success : true,
+            data: {
+              StackData: resobj
+            }
+          })
         })
       })
     })

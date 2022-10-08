@@ -1,5 +1,12 @@
 const mysql = require('mysql')
+//done
 function handler(req, res) {
+    if (req.user.isAdmin){
+        return res.status(403).send({
+            success : false,
+            message : 'Admin can\'t add tasks'
+        });
+    }
     var con = mysql.createConnection({
         host: "localhost",
         user: "pico",
@@ -18,22 +25,34 @@ function handler(req, res) {
     var comp2 = d.getFullYear() + '-' + mnth + '-' + dayy
     console.log(comp2);
     if (comp > comp2){
-        res.status(400).send('Date Value More than Current Date')
+        res.status(400).send({
+            success: false,
+            message : 'Date Value More than Current Date'
+        })
         return 0;
     }
     con.connect(async (err)=>{
         if (err) {
-            res.status(400).send("Datbase Error");
+            res.status(400).send({
+                message : "Datbase Error",
+                success : false
+            });
             return 0
         }
         var sql = "Insert Into Tasks(EmployeeId, TaskDescription, StartDate, TimeTaken, TaskType) Values ?";
         con.query(sql, [Tasks], function (erro, result) {
             if (erro) {
                 console.log(erro.code)
-                res.status(400).send('Query Error');
+                res.status(400).send({
+                    success : false,
+                    message : 'Query Error'
+                });
                 return 0;
             }
-            res.send('Task Added Successfully');
+            res.send({
+                success : true,
+                message : 'Task Added Successfully'
+            });
         });
     })
 }
