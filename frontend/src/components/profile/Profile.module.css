@@ -3,6 +3,6 @@
 }
 .submitButton {
     width: 100%;
-    padding: 1em;
+    padding: 1em !important;
     background-color: #F0A500;
 }
