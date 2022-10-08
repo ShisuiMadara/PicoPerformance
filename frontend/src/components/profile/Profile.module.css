@@ -1,0 +1,8 @@
+.container {
+    background-color: rgba(109, 178, 183, 0.1);
+}
+.submitButton {
+    width: 100%;
+    padding: 1em;
+    background-color: #F0A500;
+}
