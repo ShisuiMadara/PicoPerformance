@@ -16,5 +16,14 @@
     color: #F4F4F4 !important;
     border-color: #F4F4F4 !important;
 }
-
-
+.inputContainer {
+    color: #CF7500 !important;
+}
+.statusBar {
+    display: none;
+    color: #F4F4F4;
+}
+.statusMessageContainer {
+    font-size: x-small;
+    border: 1px solid #CF7500 !important;
+}
