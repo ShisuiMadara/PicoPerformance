@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const mysql = require('mysql')
 async function hashPassword (Password) {
-  return await bcrypt.hash(Password)
+  return await bcrypt.hash(Password, 10)
 }
 async function handler (req, res) {
   const con = mysql.createConnection({

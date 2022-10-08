@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const mysql = require('mysql')
 
 async function hashPassword (Password) {
-  return await bcrypt.hash(Password)
+  return await bcrypt.hash(Password, 10)
 }
 
 function updatePassword (req, res) {

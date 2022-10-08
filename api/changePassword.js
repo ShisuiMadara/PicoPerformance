@@ -2,7 +2,7 @@ const mysql = require('mysql')
 const bcrypt = require('bcrypt')
 
 async function hashPassword (Password) {
-  return await bcrypt.hash(Password)
+  return await bcrypt.hash(Password, 10)
 }
 
 async function changePassword (req, res) {
@@ -15,7 +15,7 @@ async function changePassword (req, res) {
 
   req = req.body
   const newPassword = req.Password
-  const newHashedPassword = hashPassword(newPassword)
+  const newHashedPassword = await hashPassword(newPassword)
   const id = req.EmailId
 
   con.connect((err) => {
