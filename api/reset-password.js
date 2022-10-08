@@ -34,6 +34,15 @@ function updatePassword (req, res) {
 
       console.log('Password updated successfully')
     })
+
+    con.query('DELETE FROM Tokens WHERE Token = "' + token + '"', function (err, result) {
+      if (err) throw err
+      if (result.affectedRows === 0) {
+        res.status(400).send('Query failed')
+      }
+
+      console.log('Token dropped successfully')
+    })
   })
 }
 

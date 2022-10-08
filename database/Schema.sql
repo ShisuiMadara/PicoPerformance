@@ -8,7 +8,6 @@ CREATE TABLE Employee(
     PasswordHash VARCHAR(128),
     IsBlocked BOOL DEFAULT FALSE,
     IsAdmin BOOL DEFAULT FALSE,
-    Token VARCHAR(100),
     PRIMARY KEY(EmployeeId)
 );
 
@@ -22,5 +21,12 @@ CREATE TABLE Tasks(
     CONSTRAINT PK1 PRIMARY KEY(TaskId, EmployeeId),
     CONSTRAINT FK1 FOREIGN KEY(EmployeeId) REFERENCES Employee(EmployeeId)
 );
+
+CREATE TABLE Tokens(
+    EmployeeId int,
+    EmailId VARCHAR(100) UNIQUE,
+    Token VARCHAR(50)
+);
+
 drop TABLE Tasks;
 drop table Employee;
