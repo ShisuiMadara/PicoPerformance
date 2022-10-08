@@ -1,30 +1,32 @@
 const mysql = require('mysql')
 const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
+const mg = require('nodemailer-mailgun-transport')
 
 async function sendEmail (email, token) {
-  const transporter = nodemailer.createTransport('SMTP', {
-    service: 'SendPulse',
+  // This is your API key that you retrieve from www.mailgun.com/cp (free up to 10K monthly emails)
+  const auth = {
     auth: {
-      user: process.env.UserEmail,
-      pass: process.env.UserPassword
+      api_key: '381f2624-44ec0801',
+      domain: 'sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org'
     }
-  })
-  console.log('c')
-  const mailOptions = {
+  }
+
+  const nodemailerMailgun = nodemailer.createTransport(mg(auth))
+
+  nodemailerMailgun.sendMail({
     from: 'picoPerformance@gmail.com',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
     html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
-  }
-
-  // send mail with defined transport object
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log(error.message)
+  }, function (err, info) {
+    if (err) {
+      console.log('Error: ' + err)
+    } else {
+      console.log('Response: ' + info)
     }
-    console.log('Message sent: %s', info.messageId)
   })
+
   // const transporter = nodemailer.createTransport({
   //   host: 'smtp.office365.com',
   //   port: 589,
