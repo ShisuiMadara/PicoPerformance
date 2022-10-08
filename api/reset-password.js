@@ -15,10 +15,11 @@ function updatePassword (req, res) {
 
   req = req.body
 
-  const token = req.body.Token
-  const password = req.body.Password
+  const token = req.Token
+  const password = req.Password
+  const emailId = req.EmailId
 
-  con.query('SELECT * FROM Employee WHERE token ="' + token + '"', function (err, result) {
+  con.query('SELECT * FROM Tokens WHERE token ="' + token + '"', function (err, result) {
     if (err) throw err
 
     if (result.length === 0) {
@@ -26,7 +27,7 @@ function updatePassword (req, res) {
     }
     const PasswordHash = hashPassword(password)
 
-    con.query('UPDATE Employee SET PasswordHash = "' + PasswordHash + '" WHERE Token = "' + token + '"', function (err, result) {
+    con.query('UPDATE Employee SET PasswordHash = "' + PasswordHash + '" WHERE EmailId = "' + emailId + '"', function (err, result) {
       if (err) throw err
       if (result.length === 0) {
         res.status(404).send('Token not found in database')
