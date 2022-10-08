@@ -3,29 +3,31 @@ const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
 
 async function sendEmail (email, token) {
-  console.log(process.env.EmailUser)
-  const mail = nodemailer.createTransport({
-    service: 'gmail',
+  const testAccount = await nodemailer.createTestAccount()
+
+  // create reusable transporter object using the default SMTP transport
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
     auth: {
-      user: process.env.EmailUser,
-      pass: process.env.EmailPassword
+      user: testAccount.user,
+      pass: testAccount.pass
     }
   })
 
-  const mailOptions = {
+  const info = await transporter.sendMail({
     from: 'picoPerformance@gmail.com',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
     html: '<p>You requested for reset password, kindly use this <a href="http://localhost:5000/reset-password?token=' + token + '">link</a> to reset your password</p>'
-
-  }
-
-  await mail.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log('Error sending mail')
-    }
-    console.log(info)
   })
+
+  console.log('Message sent: %s', info.messageId)
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  // Preview only available when sending through an Ethereal account
+  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
 }
 
 function sendMailToEmail (req, res) {
