@@ -1,36 +1,37 @@
 const mysql = require('mysql')
 const Schema = mysql.schema
 
-const con = mysql.createConnection({
-  host: 'localhost',
-  user: 'pico',
-  password: 'password'
-})
-
-con.connect(function (err) {
-  if (err) throw err
-  console.log('Connected!')
-})
-
 const userSchema = new Schema({
+  Name: {
+    type: String,
+    required: true
+  },
   EmailId: {
     type: String,
+    required: true
+  },
+  ContactNo: {
+    type: String,
+    required: true
+  },
+  Department: {
+    type: String,
+    required: true
+  },
+  JoiningDate: {
+    type: Date,
     required: true
   },
   Password: {
     type: String,
     required: true
   },
-  role: {
-    type: String,
-    default: 'basic',
-    enum: ['basic', 'supervisor', 'admin']
-  },
-  accessToken: {
-    type: String
+  IsAdmin: {
+    type: Boolean,
+    default: false
   }
 })
 
-const user = mysql.model('task', userSchema)
+const user = mysql.model('Employee', userSchema)
 
 module.exports = user
