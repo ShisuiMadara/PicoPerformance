@@ -26,7 +26,7 @@ function updatePassword (req, res) {
     }
     const PasswordHash = hashPassword(password)
 
-    con.query('UPDATE Employee SET PasswordHash = "' + PasswordHash + '" WHERE Token = "' + token + '"', function(err, result) {
+    con.query('UPDATE Employee SET PasswordHash = "' + PasswordHash + '" WHERE Token = "' + token + '"', function (err, result) {
       if (err) throw err
       if (result.length === 0) {
         res.status(404).send('Token not found in database')
