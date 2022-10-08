@@ -33,7 +33,7 @@ function handler(req, res) {
                 res.status(400).send('Query Error');
                 return 0;
             }
-            res.send('User Blocked Successfully!');
+            res.send('Task Added Successfully');
         });
     })
 }
