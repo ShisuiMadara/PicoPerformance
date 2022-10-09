@@ -5,6 +5,7 @@
     right: 0;
     bottom: 0;
     background-color: #F4F4F4;
+    overflow-y: scroll;
 }
 .loginWrapper {
     z-index: -100;
@@ -14,11 +15,12 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.75);
+    overflow-y: scroll;
 }
 .messageContainer {
     background: linear-gradient(rgba(240, 165, 0, 0.7), rgba(207, 117, 0, 0.7));
     border-radius: 0 25% 0 25%;
-    font-size: x-large;
+    font-size: large;
     color: #000000;
     font-family: 'Courier New', Courier, monospace;
 }
@@ -28,4 +30,21 @@
     color: #000000 !important;
     border-color: #000000 !important;
 }
-
+@media screen and (max-width : 1024px) {
+    .container {
+        position: absolute;
+        top: -1000;
+        left: 0;
+        right: 0;
+        bottom: -1000;
+        background-color: #F4F4F4;
+        overflow-y: scroll;
+    }
+    .messageContainer {
+        background: linear-gradient(rgba(240, 165, 0, 0.7), rgba(207, 117, 0, 0.7));
+        border-radius: 0 25% 0 25%;
+        font-size: medium;
+        color: #000000;
+        font-family: 'Courier New', Courier, monospace;
+    }
+}
