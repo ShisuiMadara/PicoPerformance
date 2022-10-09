@@ -2,8 +2,18 @@ import react from "react";
 
 import styles from "./card.component.css";
 import { Button, Grid, Divider } from "@mui/material";
+import Login from "../wrapperLogin/login";
 
 export default class Card extends react.Component {
+  wrapLoginOpen = () => {
+    const element = document.getElementsByClassName(styles.loginWrapper);
+    element[0].style.zIndex = "100";
+  };
+  wrapLoginClose = () => {
+    const element = document.getElementsByClassName(styles.loginWrapper);
+    element[0].style.zIndex = "-100";
+  };
+
   constructor(props) {
     super(props);
   }
@@ -43,7 +53,8 @@ export default class Card extends react.Component {
               className={styles.center}
               sx={{ py: "1%" }}
             >
-              2
+              {/* {this.props.task.TaskId} */}
+              4
             </Grid>
           </Grid>
           <Grid
@@ -70,7 +81,8 @@ export default class Card extends react.Component {
               className={styles.center}
               sx={{ py: "1%" }}
             >
-              2020UCS0106
+              {/* {this.props.EmployeeId} */}
+              3
             </Grid>
           </Grid>
           <Grid
@@ -97,7 +109,8 @@ export default class Card extends react.Component {
               className={styles.center}
               sx={{ py: "1%" }}
             >
-              6 October 2022
+              {/* {this.props.StartDate} */}
+              2
             </Grid>
           </Grid>
           <Grid
@@ -124,7 +137,8 @@ export default class Card extends react.Component {
               className={styles.center}
               sx={{ py: "1%" }}
             >
-              Same
+              {/* {this.props.TaskType} */}
+              1
             </Grid>
           </Grid>
         </Grid>
