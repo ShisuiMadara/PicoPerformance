@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-//done Redundant
+//done
 async function getAll (req, res) {
   if (req.user.isAdmin == 0) {
     res.status(403).send({

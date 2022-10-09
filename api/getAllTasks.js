@@ -11,6 +11,7 @@ async function getAllTasks (req, res) {
   req = req.body
 
   const find = req.EmployeeId
+  const isSearch = req.Search
   con.connect((err) => {
     if (err) {
       res.status(400).send({
@@ -20,8 +21,10 @@ async function getAllTasks (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Tasks WHERE EmployeeId = "' + find + '"'
-
+    var sql = 'SELECT * FROM Tasks WHERE EmployeeId = "' + find + '"'
+    if (isSearch){ sql = sql + ' AND StartDate BETWEEN "' + req.StartDate + '" AND "' + req.EndDate + '"' }
+    console.log(sql)
+    
     con.query(sql, function (erro, result) {
       if (erro) {
         res.status(400).send({

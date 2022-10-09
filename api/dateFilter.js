@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-
+//redundant
 async function filter (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
