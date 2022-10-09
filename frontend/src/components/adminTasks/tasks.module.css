@@ -1,7 +1,8 @@
 .cardContainer {
-    border: 1px solid #CF7500;
     width: 100% !important;
     padding: 0 !important;
+    background-color: #CF7500;
+    box-shadow: 10px;
 }
 .wrapper {
     position: absolute;

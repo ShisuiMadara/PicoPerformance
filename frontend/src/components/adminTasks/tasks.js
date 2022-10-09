@@ -1,22 +1,21 @@
 import { Button, Divider, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Pagination, Select, Switch, TextField } from '@mui/material';
 import react from 'react';
-import ReactDOM from "react-dom/client";
+import CollapsibleTable from '../taskTable/CollapsibleTable';
 import SearchIcon from '@mui/icons-material/Search';
-import Card from '../taskCard/card';
-import CloseIcon from '@mui/icons-material/Close';
+import UserGraphs from '../userGraphs/userGraphs';
 
 import styles from './tasks.module.css';
 
 export default class ATasks extends react.Component {
-    previosPage = 0;
     handleSubmit = (event) => {
         event.preventDefault();
         console.log(event);
+        const email = event.target.email.value;
         event.target.email.value = '';
         var recievedData = [];
         // update tasks
         this.setState({
-            tasks: recievedData
+            users: recievedData
         });
     }
     changeFilter = (event) => {
@@ -31,7 +30,8 @@ export default class ATasks extends react.Component {
             });
         }
         this.setState({
-            selectedUser: event.target.value
+            selectedUser: event.target.value,
+            page: 0
         });
     }
     toggleUserState = (event) => {
@@ -46,34 +46,28 @@ export default class ATasks extends react.Component {
 
     }
     changePage = (event, value) => {
-        var elements = document.getElementsByClassName(`taskPage#${this.previosPage - 1}`);
-        for(var i = 0; i < elements.length; i++) {
-            elements[i].style.display = 'none';
+        var tasks = [];
+        for(var i = 5 * (value - 1); i < 5 * value && i < this.state.tasks.length; i++) {
+            tasks.push(this.state.tasks[i]);
         }
-        elements = document.getElementsByClassName(`taskPage#${value - 1}`);
-        for(var i = 0; i < elements.length; i++) {
-            elements[i].style.display = 'block';
-        }
-        this.previosPage = value;
+        this.setState({
+            page: value,
+            currentTasks: tasks
+        });
     }
     filterDate = (event) => {
         event.preventDefault();
         console.log(event);
     }
-    loadTask = (event) => {
-        document.getElementById('taskViewer').style.zIndex = '100';
-        ReactDOM.createRoot(document.getElementById('taskViewer')).render(<TaskViewer onClose={this.unloadTask} task={this.state.tasks[event.target.value]} />);
-    }
-    unloadTask = (event) => {
-        document.getElementById('taskViewer').style.zIndex = '-100';
-    }
     constructor(props) {
         super(props);
         this.state = {
             tasks:  [],
+            currentTasks: [],
             users:  [],
             filter: "Select Filter",
-            selectedUser: 'Select User'
+            selectedUser: 'Select User',
+            page: 1
         };
     }
     render() {
@@ -188,13 +182,20 @@ export default class ATasks extends react.Component {
                     <Grid item xs={0} md={3} lg={4}>
                         {/* white space */}
                     </Grid>
+                    {
+                        ((typeof this.state.selectedUser === 'string') && this.state.selectedUser === 'Select User') ? (<></>) : (
+                            <Grid item xs={12}>
+                                <UserGraphs user={this.state.users[this.state.selectedUser]} />
+                            </Grid>
+                        )
+                    }
                     <Grid item xs={12}>
                         <Grid container sx={{display: 'flex'}} alignContent={'center'} alignItems={'center'} spacing={2} justifyContent="center" direction={'column'} >
                             <Grid item xs={0} md={2} lg={3}>
                                 {/* white space */}
                             </Grid>
                             <Grid item xs={12} md={8} lg={3} justifyContent='center'>
-                                <Pagination onChange={this.changePage} count={this.state.tasks.length % taskCount === 0 ? parseInt(this.state.tasks.length / taskCount) : parseInt((this.state.tasks.length / taskCount) + 1)} color="primary" />
+                                <Pagination onChange={this.changePage} count={typeof this.state.selectedUser === 'string' ? 0 : this.state.tasks.length % taskCount === 0 ? parseInt(this.state.tasks.length / taskCount) : parseInt((this.state.tasks.length / taskCount) + 1)} color="primary" />
                             </Grid>
                             <Grid item xs={0} md={8} lg={3}>
                                     {/* white space */}
@@ -202,31 +203,15 @@ export default class ATasks extends react.Component {
                         </Grid>
                     </Grid>
                     <Grid item xs={12} textAlign='center'>
-                        <Grid container sx={{display: 'flex'}} alignContent={'center'} alignItems={'center'} spacing={2} justifyContent="center" direction={'column'}>
                         {
-                            this.state.tasks.length === 0 ? (
-                                <Grid item xs={12} sx={{textAlign: 'center'}}>No tasks available.</Grid>
-                            ) : (this.state.tasks.map((task, index) => {
-                                return (
-                                    <Grid item xs={12} className={`taskPage#${parseInt(index/taskCount)}`} key={`taskPage#${index}`} sx={{display: 'none'}}>
-                                        <Grid container sx={{display: 'flex'}} alignContent={'center'} alignItems={'center'} spacing={2} justifyContent="center" direction={'column'}>
-                                            <Grid item xs={0} md={1} lg={2}>
-                                                    {/* white space */}
-                                            </Grid>
-                                            <Grid className={styles.cardContainer} item xs={12} md={10} lg={8}>
-                                                <Button onClick={this.loadTask} value={index}>
-                                                    <Card task={task} />
-                                                </Button>
-                                            </Grid>
-                                            <Grid item xs={0} md={1} lg={2}>
-                                                    {/* white space */}
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                );
-                            }))
+                            this.state.tasks.length === 0 || (typeof this.state.selectedUser === 'string')? (
+                                <> No tasks available.</>
+                            ) : (
+                                <>
+                                <CollapsibleTable tasks={this.state.currentTasks} user={this.state.users[this.state.selectedUser]}/>
+                                </>
+                            )
                         }
-                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
@@ -238,55 +223,5 @@ export default class ATasks extends react.Component {
         if(this.state.tasks.length !== 0) {
             this.changePage(null, 1);
         }
-    }
-}
-class TaskViewer extends react.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <>
-                <Grid container className={styles.taskContainer} sx={{display: 'flex'}} alignContent={'center'} alignItems={'center'}>
-                    <Grid item xs={0} md={4}>
-                        {/* white space */}
-                    </Grid>
-                    <Grid item xs={12} md={4} sx={{textAlign: 'right'}}>
-                        {/* close button */}
-                        <Button sx={{color: '#F4F4F4'}} onClick={this.props.onClose}>
-                            <CloseIcon />
-                        </Button>
-                    </Grid>
-                    <Grid item xs={0} md={4}>
-                        {/* white space */}
-                    </Grid>
-                    <Grid item xs={0} md={4}>
-                        {/* white space */}
-                    </Grid>
-                    {
-                        Object.keys(this.props.task).length === 0 ? (<Grid item xs={12} md={4} sx={{textAlign: 'center'}}>Invalid task object.</Grid>) : (Object.keys(this.props.task).map((key, index) => {
-                            return (
-                                <Grid item xs={12} md={4}>
-                                <Grid container maxWidth={true} sx={{display: 'flex'}} alignContent={'center'} alignItems={'center'}>
-                                    <Grid item xs={8} md={5} sx={{textAlign: 'center'}}>
-                                        {key}
-                                    </Grid>
-                                    <Grid item xs={2} md={2} sx={{textAlign: 'center'}}>
-                                        :
-                                    </Grid>
-                                    <Grid item xs={12} md={5} sx={{textAlign: 'center'}}>
-                                        {this.props.task[key]}
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            );
-                        }))
-                    }
-                    <Grid item xs={0} md={4}>
-                        {/* white space */}
-                    </Grid>
-                </Grid>
-            </>
-        );
     }
 }
