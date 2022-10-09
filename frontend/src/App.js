@@ -3,13 +3,13 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Home from "./pages/home/home";
 import NoPage from "./pages/nopage/nopage";
 import Helmet from 'react-helmet';
-import './App.css';
+import styles from './App.module.css';
 import Dashboard from './pages/dashboard/dashboard';
 
 class App extends Component {
   render(){
     return (
-      <>
+      <div className={styles.allContainer}>
       <Helmet>
         <title>PicoPerformance</title>
         <link rel="icon" href="/favicon.png" />
@@ -25,7 +25,7 @@ class App extends Component {
         </Route>
       </Routes>
     </BrowserRouter>
-    </>
+    </div>
 
     );
   }

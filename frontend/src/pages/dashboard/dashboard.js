@@ -25,12 +25,12 @@ import Profile from "../../components/profile/Profile";
 
 import styles from "./dashboard.module.css";
 import CreateUser from "../../components/createUser/createUser";
-import Tasks from "../../components/tasks/tasks";
+import ATasks from "../../components/adminTasks/tasks";
+import UTasks from "../../components/userTasks/tasks";
 
 const Dashboard = (props) => {
   // set variables and hooks
   const [open, setOpen] = React.useState(false);
-  const [location, setLocation] = React.useState("Tasks");
   const [userdata, setUserdata] = React.useState({});
   const [screenWidth, setScreenWidth] = React.useState(window.innerWidth > 768 ? window.innerWidth / 3 : window.innerWidth);
   const Theme = createTheme({
@@ -66,26 +66,27 @@ const Dashboard = (props) => {
 
   // validate user
   const valid = true;
-  const usertype = "admin";
+  const usertype = "employee";
 
   // define dashboard tabs
   // default ui for admin
   let locations = {
-    Home:           [ "", "/"],
-    "Tasks":        [ "", <Tasks />],
-    "Create User":  [ "", <CreateUser />],
-    "Profile":      [ "", <Profile userdata={userdata} />],
-    Logout:         [ "", "Logout"],
+    Home:                       [ "", "/"],
+    "Manage Employees":         [ "", <ATasks />],
+    "Create Employee":              [ "", <CreateUser />],
+    "Profile":                  [ "", <Profile userdata={userdata} />],
+    Logout:                     [ "", "Logout"],
   };
   if(usertype === 'employee') {
     // changed ui for employee
     locations = {
       Home:           [ "", "/"],
-      "Tasks":        [ "", <CreateUser />],
+      "Tasks":        [ "", <UTasks />],
       "Profile":      [ "", <Profile userdata={userdata} />],
       Logout:         [ "", "Logout"],
     };
-  }
+  };
+  const [location, setLocation] = React.useState(Object.keys(locations)[1]);
 
   // eventListeners
   window.addEventListener("resize", function(event) {
@@ -174,7 +175,6 @@ const Dashboard = (props) => {
             <Main width={screenWidth} open={open}>
               <DrawerHeader />
               {locations[location][1]}
-              {/* <Footer className={styles.foot} /> */}
             </Main>
           </Box>
         </ThemeProvider>
