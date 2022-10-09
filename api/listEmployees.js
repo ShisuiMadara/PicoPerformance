@@ -1,7 +1,6 @@
 const mysql = require('mysql')
-//done
+//done Redundant
 async function getAll (req, res) {
-  console.log(req.user)
   if (req.user.isAdmin == 0) {
     res.status(403).send({
       message: 'Access Denied',
@@ -15,7 +14,8 @@ async function getAll (req, res) {
     password: 'password',
     database: 'picoperformance'
   })
-
+  req = req.body;
+  if (!req.Search) req.Search = ''
   con.connect((err) => {
     if (err) {
       res.status(400).send({
@@ -25,22 +25,22 @@ async function getAll (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Employee WHERE IsAdmin = 0'
+    const sql = 'SELECT EmployeeId, Name, EmailId, ContactNo, JoiningDate, Department, IsBlocked, IsAdmin FROM Employee WHERE IsAdmin = 0 AND (EmailId="' + req.Search + '"' + 'OR Name LIKE "%' + req.Search + '%")'
     con.query(sql, function (erro, result) {
       if (erro) {
+        console.log(erro.message)
         res.status(400).send({
           message: 'Unknown Error',
           success: false
-      })
+        })
         return 0
       }
-      console.log('Number of records inserted: ' + result.affectedRows)
       res.send({
         success: true,
         data: {
           list: result
         }
-    })
+      })
     })
   })
 }
