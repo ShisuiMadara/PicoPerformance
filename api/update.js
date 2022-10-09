@@ -25,10 +25,11 @@ async function handler (req, res) {
         })
         return 0
       }
-      res.send({
+      res.status(200).send({
         message: 'Details Edited Successfully!',
         success: true
       })
+      return 0
     })
   })
 }

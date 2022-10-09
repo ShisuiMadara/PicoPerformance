@@ -51,7 +51,7 @@ async function changePassword (req, res) {
         })
       }
 
-      res.send({
+      res.status(200).send({
         success: true,
         message: 'Password Changed Successfully'
       })
