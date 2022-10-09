@@ -67,7 +67,8 @@ export default class ATasks extends react.Component {
             users:  [],
             filter: "Select Filter",
             selectedUser: 'Select User',
-            page: 1
+            page: 1,
+            filterData: []
         };
     }
     render() {
@@ -185,7 +186,7 @@ export default class ATasks extends react.Component {
                     {
                         ((typeof this.state.selectedUser === 'string') && this.state.selectedUser === 'Select User') ? (<></>) : (
                             <Grid item xs={12}>
-                                <UserGraphs user={this.state.users[this.state.selectedUser]} />
+                                <UserGraphs user={this.state.users[this.state.selectedUser]} filter={this.state.filterData} />
                             </Grid>
                         )
                     }
