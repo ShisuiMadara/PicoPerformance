@@ -29,5 +29,3 @@ CREATE TABLE Tokens(
     CONSTRAINT FK4 FOREIGN KEY (EmployeeId) REFERENCES Employee(EmployeeId)
 );
 
-drop TABLE Tasks;
-drop table Employee;

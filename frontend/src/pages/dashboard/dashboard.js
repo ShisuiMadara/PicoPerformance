@@ -67,7 +67,7 @@ const Dashboard = (props) => {
 
   // validate user
   const valid = true;
-  const usertype = "admin";
+  const usertype = "employee";
 
   // define dashboard tabs
   // default ui for admin
