@@ -108,11 +108,11 @@ export default class Home extends React.Component {
                 <div className={styles.loginWrapper}>
                     <Login onClose={this.wrapLoginClose}/>
                 </div>
-                <div className={styles.container}>
+                <div>
                     <div className={styles.body}>
                         <Grid className={styles.container} container style={{ display: 'flex' }} alignContent={"center"} alignItems={"center"}>
                             <Grid item xs={12}>
-                                <Grid container className={styles.messageContainer} padding={2}>
+                                <Grid container className={styles.messageContainer} marginTop={5} padding={1}>
                                     <Grid item xs={1} sm={2} md={3}>
                                         {/* blank space */}
                                     </Grid>
@@ -176,14 +176,16 @@ export default class Home extends React.Component {
                                         What does it offer ?
                                     </Grid>
                                     <Grid padding={3} item xs={12} textAlign={'center'}>
-                                        <Grid container>
-                                            <Grid className={styles.login} item xs={12} sm={6}>
+                                        <Grid container padding={5} spacing={3}>
+                                            <Grid className={styles.login} item xs={12} md={6}>
                                                 {/* content part 1 */}
-                                                content 1
+                                                The deadlines approach but the work progress stands still… Tired of seeing employees struggle at work? People are unable to manage time and resources while companies stand helpless. Millions are wasted on organizing workshops and hiring “motivators”. But what if there is a FREE and elegant solution to it?
                                             </Grid>
-                                            <Grid item xs={12} sm={6}>
+                                            <Grid item xs={12} md={6}>
                                                 {/* content part 2 */}
-                                                content 2
+                                                Introducing PicoPerformance, a free task management and time analyzer tool. We provide you indepth information about the time break of the employee.
+Fed up of numbers? We provide interactive and dynamic graphs for better visualization and comparison. Now the employee as well as the employer can improve on how they spend their time.
+
                                             </Grid>
                                         </Grid>
                                     </Grid>

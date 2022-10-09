@@ -38,9 +38,8 @@ function sendMailToEmail (req, res) {
   con.query('SELECT * FROM Employee WHERE EmailId ="' + email + '"', function (err, result) {
     if (err) throw err
 
-    console.log(result[0])
-
-    if (result[0].EmailId.length > 0) {
+    console.log(result.length)
+    if (result.length != 0 && result[0].EmailId.length > 0) {
       const token = randtoken.generate(20)
       const sent = sendEmail(email, token)
       const dataa = [[result[0].EmployeeId, email, token]]
@@ -48,19 +47,23 @@ function sendMailToEmail (req, res) {
         con.query('Insert Into Tokens Values ?', [dataa], function (err, result) {
           if (err) {
             console.log(err.message)
+            res.status(400).send({
+              message: 'Something went wrong. Kindly try again',
+              success: false
+            })
           }
           res.write(result)
         })
 
         console.log('Email sent successfully')
       } else {
-        res.status(400).send({
+        return res.status(400).send({
           message: 'Something went wrong. Kindly try again',
           success: false
         })
       }
     } else {
-      res.status(404).send({
+      return res.status(404).send({
         message: 'EmailId not found. Kindly signUp.',
         success: false
       })
