@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 const mysql = require('mysql')
-//done
+
 async function hashPassword (Password) {
   return await bcrypt.hash(Password, 10)
 }
@@ -37,7 +37,7 @@ async function handler (req, res) {
         return 0
       }
       console.log('Number of records inserted: ' + result.affectedRows)
-      res.send({
+      res.status(200).send({
         message: 'User created Successfully!',
         success: true
       })
