@@ -1,15 +1,15 @@
 const mysql = require('mysql')
 const bcrypt = require('bcrypt')
-//done
+
 async function hashPassword (Password) {
   return await bcrypt.hash(Password, 10)
 }
 
 async function changePassword (req, res) {
-  if (req.user.EmailId != req.body.EmailId) {
+  if (req.user.EmailId !== req.body.EmailId) {
     res.status(401).send({
-      message : 'Unauthorized',
-      success : false
+      message: 'Unauthorized',
+      success: false
     })
   }
   const con = mysql.createConnection({
@@ -27,8 +27,8 @@ async function changePassword (req, res) {
   con.connect((err) => {
     if (err) {
       res.status(400).send({
-        message : 'Datbase Error',
-        success : false
+        message: 'Datbase Error',
+        success: false
       })
       return 0
     }

@@ -15,7 +15,7 @@ async function handler (req, res) {
       })
       return 0
     }
-    const sql = "Update Employee Set Name='" + req.Name + "', ContactNo=" + req.ContactNo + "' Where EmailId='" + req.EmailId + "'"
+    const sql = "Update Employee Set Name='" + req.Name + "', ContactNo='" + req.ContactNo + "' Where EmailId='" + req.EmailId + "'"
     con.query(sql, function (erro, result) {
       if (erro) {
         console.log(erro.message)
