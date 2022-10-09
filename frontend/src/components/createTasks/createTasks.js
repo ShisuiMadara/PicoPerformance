@@ -1,5 +1,5 @@
 import react from "react";
-import { Button, Divider, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, Switch, TextField } from '@mui/material';
+import { Button, Divider, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, Switch, TextField, NativeSelect } from '@mui/material';
 import styles from "./createTasks.module.css";
 
 
@@ -40,29 +40,35 @@ export default function CreateTasks(props){
                         {
                             Object.keys(formArray).map((key, index) =>{
                                 return(
-                                    <Grid item sx={12} md={6} lg={6} px={3} py={4} key={key}>
+                                    <Grid item sx = {{display: "flex", width: "100%"}} md={6} lg={6} px={3} py={4} key={key}>
                                         <TextField className="ProfileInputs" name={key} type={formArray[key]} sx={{width: "100%"}}  onKeyUp={HandleInput} label={key} variant="outlined" focused />
                                     </Grid>
                                 );
                             })
 }
-                            <Grid item sx={12} md={6} lg={6} px={3} py={4} key = "Select Task Type">
-                            <InputLabel sx={{width: "100%"}} focused>Task Type</InputLabel>
-                                    <Select sx={{width: "100%"}}
-                                        label="Select TaskType"
-                                    >
-                                        <MenuItem sx={{width: "100%"}}>Select Task Type</MenuItem>
-                                        {
-                                           
-                                                TaskType.map((item) => {
-                                                    return (
-                                                        <MenuItem sx={{width: "100%"}}>{item}</MenuItem>
-                                                    );
-                                                })
-                                            
-                                        }
-                                    </Select> 
-                            </Grid>
+                            <Grid item sx = {{display: "flex", width: "100%"}} md={6} lg={6} px={3} py={4} >
+
+                            <FormControl fullWidth focused>
+                            <InputLabel variant="standard" sx = {{display: "flex", width: "100%"}}   >
+                                Task Type
+                            </InputLabel>
+                            <NativeSelect
+                                defaultValue={"SELECT"}
+                                inputProps={{
+                                name: 'Department',
+                                id: 'uncontrolled-native',
+                                }}
+                            >
+                                <option value="">
+                                    <em>None</em>
+                                </option>
+                                <option value={1}>Working</option>
+                                <option value={2}>Break</option>
+                                <option value={3}>Meeting</option>
+                            </NativeSelect>
+                            </FormControl>  
+                                        
+                        </Grid>
                         
 
                           
