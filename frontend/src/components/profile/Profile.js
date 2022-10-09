@@ -5,6 +5,8 @@ import { Grid, Avatar, Typography, Divider, TextField, Button } from "@mui/mater
 // stylesheets
 import styles from "./Profile.module.css";
 // import axios from "axios";
+import { FormControl, InputLabel, NativeSelect } from '@mui/material';
+import { grid } from "@mui/system";
 
 function capitalize( value){
     let str = `${value}`.toLowerCase();
@@ -19,10 +21,11 @@ export default function Profile(props){
         'Contact' : "Ashutosh Gangwar"
     }
     const formArray = {
-        'Email' : "text",
-        'Contact' : 'phone',
-        'Password' : "password"
+        'Contact' : "phone",
+        'New Password' : "password"
     }
+
+
     const HandleInput = (event) => {
         let elements = document.getElementsByClassName("ProfileInputs");
         for(let i = 0; i < elements.length; i++){
@@ -74,6 +77,7 @@ export default function Profile(props){
                         md: 3,
                         lg: 5,
                     }}>
+                        
                           {Object.keys(sampledata).map((key, index) =>{
                                     return(
                                         <Grid container maxWidth  key={index} padding={1}>
@@ -116,11 +120,38 @@ export default function Profile(props){
                                 return(
                                     <Grid item sx = {{display: "flex", width: "100%"}}  md={6} lg={4} padding={1} key={key}>
                                         <TextField className="ProfileInputs" name={key} type={formArray[key]} sx={{width: "100%"}}  onKeyUp={HandleInput} label={key} variant="outlined" />
+                                        
                                     </Grid>
                                 );
                             })
+
                         }
+                        <Grid item sx = {{display: "flex", width: "100%"}}  md={6} lg={4} padding={1} >
+
+                            <FormControl fullWidth focused>
+                            <InputLabel variant="standard" sx = {{display: "flex", width: "100%"}}   >
+                                Department
+                            </InputLabel>
+                            <NativeSelect
+                                defaultValue={"SELECT"}
+                                inputProps={{
+                                name: 'Department',
+                                id: 'uncontrolled-native',
+                                }}
+                            >
+                                <option value="">
+                                    <em>None</em>
+                                </option>
+                                <option value={1}>Software Developement</option>
+                                <option value={2}>Human Resource</option>
+                                <option value={3}>Management</option>
+                                <option value={4}>Finance</option>
+                            </NativeSelect>
+                            </FormControl>  
+                                        
+                        </Grid>
                     </Grid>
+                    
                     <Grid container maxWidth sx = {{display: "flex", width: "100%"}} justifyContent="center" alligncontent="center">
                         <Grid item xs={12} md={6} lg = {4} padding = {1}>
                             {
