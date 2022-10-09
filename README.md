@@ -18,7 +18,28 @@ This serves both as:
    </ul></li>
 </ul>
 
-#Salient Features
+<h1>Salient Features</h1>
+<br>
 
 <ul>
-  <li>
+  <li>Role based access to features</li>
+  <li>Robust User Interface</li>
+  <li>Graphs for better visualization of data</li>
+  <li>JWT token based authorization</li>
+  <li>Secure MySQL based database</li>
+  <li>Mail authorization based recovery and security system</li>
+  <li>Scalable REST APIs </li>
+ </ul>
+ 
+ <br>
+ <h1>Technologies used</h1>
+ <br>
+ <ul>
+  <li>React.js</li>
+  <li>Material UI</li>
+  <li>Node.js</li>
+  <li>CSS</li>
+  <li>MySQL</li>
+  <li>Microsoft Azure</li>
+  <li>MailGun</li>
+ </ul>
