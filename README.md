@@ -48,9 +48,24 @@ This serves both as:
 <h1>Usage</h1>
 <br>
 
+The website is hosted on microsoft azure and can be accessed from <-----------link------->. 
+
 <ul>
   <li>Employer/Admin: 
     <ul>
-      <li>Admin can view all employees on its <b>dashboard</b>. One can select each t
+      <li>Admin can view all employees on its <b>dashboard</b>.</li>
+      <li>On <b>one click</b> one can see each of the tasks <b>in detail</b> of <b>each</b> user.</li>
+      <li> <b>Dynamic</b> graphs provide better visualization of user data.</li>
+      <li> <b>Filters</b> are provided on date so as to view data between <b>specific dates</b> </li>
+      </ul>
   </li>
+  <li>
+    Employee:
+    <ul>
+      <li>Employee can <b> add daily tasks </b> .</li>
+      <li>On <b>one click</b> one can see each of its tasks .</li>
+      <li> <b>Dynamic</b> graphs provide better visualization of user data.</li>
+      <li> <b>Filters</b> are provided on date so as to view data between <b>specific dates</b> </li>
+   </li>
+ </ul>
 
