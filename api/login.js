@@ -36,6 +36,12 @@ async function Login (req, res, value) {
       }
       const user = result[0]
       if (user) {
+        if (user.isBlocked){
+          return res.status(403).send({
+            success: false,
+            message : 'User is Blocked'
+          })
+        }
         console.log(req.body.Password)
         const validPass = await validatePassword(req.body.Password, user.PasswordHash)
         if (!validPass) {
