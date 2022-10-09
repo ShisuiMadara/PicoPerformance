@@ -24,13 +24,12 @@ async function handler (req, res) {
           message: 'Query Error',
           success: false
         })
-        return 0
+        return
       }
       res.status(200).send({
         message: 'Details Edited Successfully!',
         success: true
       })
-      return 0
     })
   })
 }
