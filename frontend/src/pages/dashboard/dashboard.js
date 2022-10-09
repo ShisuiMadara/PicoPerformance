@@ -27,6 +27,7 @@ import styles from "./dashboard.module.css";
 import CreateUser from "../../components/createUser/createUser";
 import ATasks from "../../components/adminTasks/tasks";
 import UTasks from "../../components/userTasks/tasks";
+import CreateTasks from "../../components/createTasks/createTasks";
 
 const Dashboard = (props) => {
   // set variables and hooks
@@ -83,6 +84,7 @@ const Dashboard = (props) => {
       Home:           [ "", "/"],
       "Tasks":        [ "", <UTasks />],
       "Profile":      [ "", <Profile userdata={userdata} />],
+      "Create Task":              ["", <CreateTasks />],
       Logout:         [ "", "Logout"],
     };
   };
