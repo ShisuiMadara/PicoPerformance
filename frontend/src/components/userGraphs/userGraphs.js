@@ -3,6 +3,18 @@ import react from 'react';
 
 import styles from './userGraphs.module.css';
 
+class PieChartToday extends react.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            data: {}
+        }
+    }
+    render(){
+        
+    }
+}
+
 export default class UserGraphs extends react.Component {
     constructor(props) {
         super(props);
