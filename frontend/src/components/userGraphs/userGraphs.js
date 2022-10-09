@@ -11,7 +11,7 @@ class PieChartToday extends react.Component{
         }
     }
     render(){
-        axios.
+        
     }
 }
 

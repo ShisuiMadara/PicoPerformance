@@ -6,7 +6,7 @@ async function hashPassword (Password) {
 }
 
 async function changePassword (req, res) {
-  if (req.user.EmailId !== req.body.EmailId) {
+  if (req.user.id !== req.body.EmailId) {
     res.status(401).send({
       message: 'Unauthorized',
       success: false
