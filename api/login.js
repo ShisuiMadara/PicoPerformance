@@ -31,10 +31,18 @@ async function Login (req, res, value) {
             success: false,
             message : 'Unknown Error'
           })
+	console.log(erro.message)
         return 0
       }
       const user = result[0]
       if (user) {
+        console.log(user)
+        if (user.IsBlocked){
+          return res.status(403).send({
+            success: false,
+            message : 'User is Blocked'
+          })
+        }
         console.log(req.body.Password)
         const validPass = await validatePassword(req.body.Password, user.PasswordHash)
         if (!validPass) {
@@ -48,7 +56,16 @@ async function Login (req, res, value) {
         const token = jwt.sign({ id: user.EmailId, Eid: user.EmployeeId, isAdmin: user.IsAdmin, isBlock: user.IsBlocked }, process.env.JWT_SECRET, { expiresIn: '1d' })
         res.send({
           success: true,
-          data: {"token": token}
+          data: {
+            "token": token,
+            Name: user.Name,
+            EmailId: user.EmailId,
+            IsAdmin: user.IsAdmin,
+            ContactNo: user.ContactNo,
+            Department: user.Department,
+            JoiningDate: user.JoiningDate,
+            EmployeeId: user.EmployeeId
+          }
         })
       }
     })
