@@ -102,7 +102,7 @@ export default class Home extends React.Component {
         };
     }
     render() {
-        const userinfo = sessionStorage.getItem("userinfo");
+        const userinfo = JSON.parse(sessionStorage.getItem("userInfo"));
         return (
             <>
                 <div className={styles.loginWrapper}>
@@ -157,7 +157,7 @@ export default class Home extends React.Component {
                                                 {/* empty space */}
                                             </Grid>
                                             <Grid item xs={12} sm={6} md={4}>
-                                                {(userinfo == null || userinfo.authorized == false) ? (
+                                                {(userinfo === null || userinfo.authorized === undefined || userinfo.authorized === false) ? (
                                                     <Button className={styles.loginButton} variant="outlined" color="error" onClick={this.wrapLoginOpen}>
                                                         Login
                                                     </Button>

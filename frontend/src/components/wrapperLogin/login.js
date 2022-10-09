@@ -5,6 +5,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import PasswordIcon from '@mui/icons-material/Password';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import axios from 'axios';
 
 import styles from "./login.module.css";
 
@@ -26,20 +27,62 @@ export default class Login extends react.Component {
     };
     authenticate = (event) => {
         event.preventDefault();
+        if(event.target.email.value === '') {
+            this.updateStatus('Email ID cannot be blank!');
+            return false;
+        }
+        if(event.target.password.value === '') {
+            this.updateStatus('Password cannot be blank!');
+            return false;
+        }
         console.log("sending request");
-        this.updateStatus('Login Successfull');
+        axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/login', {
+            EmailId: event.target.email.value,
+            Password: event.target.password.value
+        }).then((response) => {
+            if(response.status === 200 && response.data.success === true) {
+                response.data.data['authorized'] = true;
+                sessionStorage.setItem('userInfo', JSON.stringify(response.data.data));
+                window.location.href = '/dashboard';
+            }
+            return true;
+        }).catch((result) => {
+            if(result.response.data !== undefined && result.response.data.success === false) {
+                this.updateStatus(result.response.data.message);
+            } else {
+                this.updateStatus('Server-side error!');
+            }
+            return true;
+        });
     }
     togglePassView = () => {
         this.setState({
             passwordVisibility: !this.state.passwordVisibility
         });
     }
-    sendForgotLink = () => {
-        console.log("email sent successfully");
+    sendForgotLink = (event) => {
+        if(document.getElementById('email').value === '') {
+            this.updateStatus('Email cannot be empty!')
+            return false;
+        }
+        axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/sendingLink', {
+            EmailId: document.getElementById('email').value
+        }).then((response) => {
+            if(response.data.success === true) {
+                this.updateStatus(response.data.message);
+            }
+        }).catch((error) => {
+            if(error.response.data !== null && error.response.data !== undefined && error.response.data.success === false) {
+                this.updateStatus(error.response.data.message);
+            } else {
+                this.updateStatus('Server error!');
+            }
+        });
+        return true;
     }
     updateStatus = (message) => {
         this.enableStatus();
-        document.getElementById('statusMessage').innerHTML += message;
+        document.getElementById('statusMessage').innerHTML = message;
     }
     enableStatus = () => {
         const elements = document.getElementsByClassName(styles.statusBar);
@@ -115,7 +158,7 @@ export default class Login extends react.Component {
                                 <Grid className={styles.inputContainer} item xs={12} sm={10} md={8} lg={4} paddingLeft={{lg: 5, xs: 3}} paddingRight={{lg: 5, xs: 3}}>
                                     <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                                         <PasswordIcon sx={{ mr: 2, my: 0.5 }} />
-                                        <TextField sx={inputStyle} fullWidth autoComplete="off" id="password" label="Password"  ame="password" variant="standard" type={this.state.passwordVisibility === true ? ('text') : ('password')} />
+                                        <TextField sx={inputStyle} fullWidth autoComplete="off" id="password" label="Password" name="password" variant="standard" type={this.state.passwordVisibility === true ? ('text') : ('password')} />
                                         <Button sx={{color: '#F4F4F4'}} paddingLeft={2} onClick={() => this.togglePassView()}>
                                             {this.state.passwordVisibility === true ? (<VisibilityIcon />) : (<VisibilityOffIcon />)}
                                         </Button>
@@ -128,7 +171,7 @@ export default class Login extends react.Component {
                                     {/* empty space */}
                                 </Grid>
                                 <Grid item xs={12} sm={10} md={8} lg={4} textAlign={"right"} paddingLeft={{lg: 5, xs: 0}} paddingRight={{lg: 5, xs: 0}}>
-                                    <Button sx={{fontSize: 'small !important', color: '#F4F4F4'}} type="submit" onClick={this.sendForgotLink}>
+                                    <Button sx={{fontSize: 'small !important', color: '#F4F4F4'}} onClick={this.sendForgotLink}>
                                         forgot password ?
                                     </Button>
                                 </Grid>
