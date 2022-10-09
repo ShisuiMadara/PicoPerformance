@@ -1,5 +1,6 @@
-function handler(req, res) {
-    res.status(200).send("Hello word");
-    return true;
+function handler (req, res) {
+  return res.status(200).send({
+    success: true
+  })
 }
-exports.execute = handler;
+exports.execute = handler

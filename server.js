@@ -15,7 +15,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 app.use((req, res, next) => {
-  if (req.path == '/api/login' || req.path == '/api/sendinglink' || req.path == '/api/reset-password'){
+  if (req.path == '/api/login' || req.path == '/api/sendingLink' || req.path == '/api/reset-password'){
     next()
     return
   }
