@@ -34,6 +34,12 @@ async function Login (req, res, value) {
 	console.log(erro.message)
         return 0
       }
+      if (result.length === 0){
+        return res.status(400).send({
+          success: false,
+          message: 'Email ID or Password is Wrong!'
+        })
+      }
       const user = result[0]
       if (user) {
         console.log(user)
@@ -48,7 +54,7 @@ async function Login (req, res, value) {
         if (!validPass) {
           res.status(400).send({
             success: false,
-            message : 'Email or Password is wrong'
+            message : 'Email ID or Password is Wrong!'
           })
           return 0
         }
@@ -75,13 +81,7 @@ async function Login (req, res, value) {
 async function login (req, res, next) {
   try {
     const user = await Login(req, res, req.body.EmailId)
-    if (user) {
-      const validPass = await validatePassword(req.body.Password, user.Password)
-      if (!validPass) return res.status(400).send('Mobile/Email or Password is wrong')
-
-      const token = jwt.sign({ id: user.EmailId, isAdmin: user.isAdmin }, process.env.TOKEN_SECRET)
-      res.header('auth-token', token).send({ token })
-    }
+    
   } catch (err) {
     next(err)
     res.status(400).send({
