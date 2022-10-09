@@ -22,18 +22,70 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Profile from "../../components/profile/Profile";
-
-import styles from "./dashboard.module.css";
 import CreateUser from "../../components/createUser/createUser";
 import ATasks from "../../components/adminTasks/tasks";
 import UTasks from "../../components/userTasks/tasks";
 import CreateTasks from "../../components/createTasks/createTasks";
+import axios from 'axios';
+
+import styles from "./dashboard.module.css";
 
 const Dashboard = (props) => {
-  // set variables and hooks
+  const [allowAccess, setAllowAccess] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const [userdata, setUserdata] = React.useState({});
   const [screenWidth, setScreenWidth] = React.useState(window.innerWidth > 768 ? window.innerWidth / 3 : window.innerWidth);
+  const validate = () => {
+    axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/hello', {}, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(sessionStorage.getItem('userInfo')).token}`
+      }
+    }).catch((error) => {
+      setAllowAccess(false);
+    }).then((response) => {
+      if(response.data !== null && response.data !== undefined && response.data.success === true) {
+        setAllowAccess(true);
+      } else {
+        setAllowAccess(false);
+      }
+    })
+  }
+  // validate user
+  const userdata = JSON.parse(sessionStorage.getItem('userInfo'));
+  const usertype = (JSON.parse(sessionStorage.getItem('userInfo')).IsAdmin === 1 ? 'admin' : 'employee');
+
+  // define dashboard tabs
+  // default ui for admin
+  let locations = {
+    Home:                       [ "", "/"],
+    "Manage Employees":         [ "", <ATasks />],
+    "Create Employee":              [ "", <CreateUser />],
+    "Profile":                  [ "", <Profile userdata={userdata} />],
+    Logout:                     [ "", "Logout"],
+  };
+  if(usertype === 'employee') {
+    // changed ui for employee
+    locations = {
+      Home:           [ "", "/"],
+      "Tasks":        [ "", <UTasks />],
+      "Profile":      [ "", <Profile userdata={userdata} />],
+      "Create Task":              ["", <CreateTasks />],
+      Logout:         [ "", "Logout"],
+    };
+  };
+  const [location, setLocation] = React.useState(Object.keys(locations)[1]);
+
+  if(allowAccess === null) {
+    validate();
+    return (
+      <>Validating... please wait!</>
+    );
+  }
+  else if(allowAccess === false) {
+    sessionStorage.clear();
+    window.location.replace('/404');
+    return (<>Invalid Access!</>);
+  }
+  // set variables and hooks
   const Theme = createTheme({
     palette: {
       primary: {
@@ -65,31 +117,6 @@ const Dashboard = (props) => {
     setOpen(false);
   };
 
-  // validate user
-  const valid = true;
-  const usertype = "employee";
-
-  // define dashboard tabs
-  // default ui for admin
-  let locations = {
-    Home:                       [ "", "/"],
-    "Manage Employees":         [ "", <ATasks />],
-    "Create Employee":              [ "", <CreateUser />],
-    "Profile":                  [ "", <Profile userdata={userdata} />],
-    Logout:                     [ "", "Logout"],
-  };
-  if(usertype === 'employee') {
-    // changed ui for employee
-    locations = {
-      Home:           [ "", "/"],
-      "Tasks":        [ "", <UTasks />],
-      "Profile":      [ "", <Profile userdata={userdata} />],
-      "Create Task":              ["", <CreateTasks />],
-      Logout:         [ "", "Logout"],
-    };
-  };
-  const [location, setLocation] = React.useState(Object.keys(locations)[1]);
-
   // eventListeners
   window.addEventListener("resize", function(event) {
     let width = window.innerWidth;
@@ -100,90 +127,86 @@ const Dashboard = (props) => {
   })
 
   // return component
-  if (valid) {
-    if (usertype === "admin" || usertype === 'employee') {
-      return (
-        <ThemeProvider theme={Theme}>
-          <Box className={styles.dashboardContainer} sx={{ display: "flex" }}>
-            <CssBaseline />
-            <AppBar width={screenWidth} position="fixed" open={open}>
-              <Toolbar>
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  sx={{ mr: 2, ...(open && { display: "none" }) }}
-                >
-                  <MenuIcon className={styles.icon} />
-                </IconButton>
-                <Breadcrumbs
-                  aria-label="breadcrumb"
-                  color="#F4F4F4"
-                  variant="h6"
-                  separator=">"
-                  padding={1}
-                >
-                  <Link underline="hover" color="inherit" href="/dashboard">
-                    Dashboard
-                  </Link>
-                  <Typography variant="h6" noWrap component="div">
-                    {location}
-                  </Typography>
-                </Breadcrumbs>
-              </Toolbar>
-            </AppBar>
-            <Drawer
-              sx={{
+  if (usertype === "admin" || usertype === 'employee') {
+    return (
+      <ThemeProvider theme={Theme}>
+        <Box className={styles.dashboardContainer} sx={{ display: "flex" }}>
+          <CssBaseline />
+          <AppBar width={screenWidth} position="fixed" open={open}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{ mr: 2, ...(open && { display: "none" }) }}
+              >
+                <MenuIcon className={styles.icon} />
+              </IconButton>
+              <Breadcrumbs
+                aria-label="breadcrumb"
+                color="#F4F4F4"
+                variant="h6"
+                separator=">"
+                padding={1}
+              >
+                <Link underline="hover" color="inherit" href="/dashboard">
+                  Dashboard
+                </Link>
+                <Typography variant="h6" noWrap component="div">
+                  {location}
+                </Typography>
+              </Breadcrumbs>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            sx={{
+              width: screenWidth,
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
                 width: screenWidth,
-                flexShrink: 0,
-                "& .MuiDrawer-paper": {
-                  width: screenWidth,
-                  boxSizing: "border-box",
-                  background: '#F4F4F4'
-                }
-              }}
-              variant="persistent"
-              anchor="left"
-              open={open}
-            >
-              <DrawerHeader>
-                <IconButton onClick={handleDrawerClose}>
-                  <MenuIcon />
-                </IconButton>
-              </DrawerHeader>
-              <Divider />
-              <List className={styles.menu}>
-                {
-                  Object.keys(locations).map((key) => (
-                    <ListItem
-                      className={styles.menuItem}
-                      key={key}
-                      Padding={1}
-                      onClick={() => {
-                        handleContent(key);
-                      }}
-                    >
-                      <ListItemButton sx={{textAlign: 'center'}}>
-                        <ListItemIcon>{locations[key][0]}</ListItemIcon>
-                        <ListItemText primary={key} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))
-                }
-              </List>
-              <Divider />
-            </Drawer>
-            <Main width={screenWidth} open={open}>
-              <DrawerHeader />
-              {locations[location][1]}
-            </Main>
-          </Box>
-        </ThemeProvider>
-      );
-    }
-  } else {
-    window.location.href = "/";
+                boxSizing: "border-box",
+                background: '#F4F4F4'
+              }
+            }}
+            variant="persistent"
+            anchor="left"
+            open={open}
+          >
+            <DrawerHeader>
+              <IconButton onClick={handleDrawerClose}>
+                <MenuIcon />
+              </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <List className={styles.menu}>
+              {
+                Object.keys(locations).map((key) => (
+                  <ListItem
+                    className={styles.menuItem}
+                    key={key}
+                    Padding={1}
+                    onClick={() => {
+                      handleContent(key);
+                    }}
+                  >
+                    <ListItemButton sx={{textAlign: 'center'}}>
+                      <ListItemIcon>{locations[key][0]}</ListItemIcon>
+                      <ListItemText primary={key} />
+                    </ListItemButton>
+                  </ListItem>
+                ))
+              }
+            </List>
+            <Divider />
+          </Drawer>
+          <Main width={screenWidth} open={open}>
+            <DrawerHeader />
+            {locations[location][1]}
+          </Main>
+        </Box>
+      </ThemeProvider>
+    );
   }
 };
 

@@ -1,12 +1,8 @@
 import * as React from "react";
 import { Grid, Avatar, Typography, Divider, TextField, Button } from "@mui/material";
-// import EfficiencyHistory from "../Charts/EfficiencyHistory";
-// import CompanyComparision from "../Charts/CompanyComparision";
+import axios from "axios";
 // stylesheets
 import styles from "./Profile.module.css";
-// import axios from "axios";
-import { FormControl, InputLabel, NativeSelect } from '@mui/material';
-import { grid } from "@mui/system";
 
 function capitalize( value){
     let str = `${value}`.toLowerCase();
@@ -14,43 +10,92 @@ function capitalize( value){
 }
 
 export default function Profile(props){
-    const sampledata = {
-        'Employee Id' : "Ashutosh Gangwar",
-        'Name' : "Ashutosh Gangwar",
-        'Eamil' : "Ashutosh Gangwar",
-        'Contact' : "Ashutosh Gangwar"
-    }
+    console.log(props.userdata);
+    const [submitState, setSubmit] = React.useState(false);
+    const [sampledata, setSampleData] = React.useState({
+        'Employee Id' : props.userdata.EmployeeId,
+        'Name' : props.userdata.Name,
+        'Eamil ID' : props.userdata.EmailId,
+        'Contact' : props.userdata.ContactNo
+    });
     const formArray = {
+        'Name' : "text",
         'Contact' : "phone",
         'New Password' : "password"
     }
-
-
-    const HandleInput = (event) => {
-        let elements = document.getElementsByClassName("ProfileInputs");
-        for(let i = 0; i < elements.length; i++){
-            const value = elements[i].children[1].children[0].value;
-            if(value!== "" && value!=null){
-                setSubmit(true);
-                return true;
-            }
+    const handleInput = (event) => {
+        var elements = document.getElementsByClassName(styles.profileInputs);
+        if((elements[0].childNodes[1].childNodes[0].value !== '' && elements[0].childNodes[1].childNodes[0].value != undefined && elements[0].childNodes[1].childNodes[0].value != null) ||
+        (elements[1].childNodes[1].childNodes[0].value !== '' && elements[1].childNodes[1].childNodes[0].value != undefined && elements[1].childNodes[1].childNodes[0].value != null) ||
+        (elements[2].childNodes[1].childNodes[0].value !== '' && elements[2].childNodes[1].childNodes[0].value != undefined && elements[2].childNodes[1].childNodes[0].value != null)) {
+            setSubmit(true);
+        } else {
+            setSubmit(false);
         }
-        setSubmit(false);
-        return false;
     }
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(event.target);
+        var newData = props.userdata;
+        var oldName = newData.Name, oldContact = newData.ContactNo;
+        newData.Name = (event.target['Name'].value === '' || event.target['Name'].value === null || event.target['Name'].value === undefined) ? newData.Name : event.target['Name'].value;
+        newData.ContactNo = (event.target['Contact'].value === '' || event.target['Contact'].value === null || event.target['Contact'].value === undefined) ? newData.ContactNo : event.target['Contact'].value;
+        if(newData.Name !== oldName || newData.ContactNo != oldContact) {
+            axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/update', newData, {
+                headers: {
+                    Authorization: `Bearer ${newData.token}`
+                }
+            }).then((response) => {
+                if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                    setSampleData({
+                        'Employee Id' : newData.EmployeeId,
+                        'Name' : newData.Name,
+                        'Eamil ID' : newData.EmailId,
+                        'Contact' : newData.ContactNo
+                    });
+                    sessionStorage.setItem('userInfo', JSON.stringify(newData));
+                } else {
+                    alert('Unable to update data! please try later.');
+                }
+            }).catch((error) => {
+                if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                    alert(error.data.message);
+                } else {
+                    alert('Server error!');
+                }
+            })
+        }
+        if(event.target['New Password'].value !== '' && event.target['New Password'].value !== null && event.target['New Password'].value !== undefined) {
+            axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/changePassword', {
+                EmailId: newData.EmailId,
+                Password: event.target['New Password'].value
+            }, {
+                headers: {
+                    Authorization: `Bearer ${newData.token}`
+                }
+            }).then((response) => {
+                if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                    alert(response.data.message);
+                    sessionStorage.clear();
+                    window.location.replace('/');
+                } else {
+                    alert('Unable to update data! please try later.');
+                }
+            }).catch((error) => {
+                if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                    alert(error.data.message);
+                } else {
+                    alert('Server error!');
+                }
+            })
+        }
     }
- 
-    const [submitState, setSubmit] = React.useState(false);
     return(
         <>
         <Grid container maxWidth padding = {{
             xs: 2,
             md: 3,
             lg: 5,
-        }} classname = {styles.container}>
+        }} className = {styles.container}>
             <Grid item xs={12}>
                 <Divider variant = "middle" />
             </Grid>
@@ -77,21 +122,21 @@ export default function Profile(props){
                         md: 3,
                         lg: 5,
                     }}>
-                        
+
                           {Object.keys(sampledata).map((key, index) =>{
                                     return(
                                         <Grid container maxWidth  key={index} padding={1}>
-                                            <Grid item xs={2} lg={2} sx={{display: "flex", width: "100%"}} alignContent="left" justifyContent="left">
+                                            <Grid item xs={6} lg={4} sx={{display: "flex", width: "100%", textAlign: 'center'}} alignContent="left" justifyContent="left">
                                                 <Typography variant="h6">
                                                     <b>{capitalize(`${key}`)}</b>
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={10} lg={2} sx = {{display: "flex", width: "100%", textAlign: 'left'}} padding={1} alignContent="center" justifyContent="center">
+                                            <Grid item xs={6} lg={2} sx = {{display: "flex", width: "100%", textAlign: 'left'}} padding={1} alignContent="center" justifyContent="center">
                                                 <Typography variant="h6">
                                                     <b>:</b>
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={12} lg={8} sx = {{display: "flex", width: "100%"}}  padding={1} alignContent="left" justifyContent="left">
+                                            <Grid item xs={12} lg={6} sx = {{display: "flex", width: "100%", textAlign: 'center'}}  padding={1} alignContent="left" justifyContent="left">
                                                 <Typography variant="h6">
                                                     {sampledata[key]}
                                                 </Typography>
@@ -113,49 +158,24 @@ export default function Profile(props){
                 <Typography variant="h5" padding={1}>
                     <b>Update Profile</b>
                 </Typography>
-                <form style = {{width: "100%"}}>
+                <form onSubmit={handleSubmit} style = {{width: "100%"}}>
                     <Grid container maxWidth sx = {{display: "flex", width: "100%"}} justifyContent = "center" alignContent = "center">
                         {
-                            Object.keys(formArray).map((key, index) =>{
+                            Object.keys(formArray).map((key) =>{
                                 return(
                                     <Grid item sx = {{display: "flex", width: "100%"}}  md={6} lg={4} padding={1} key={key}>
-                                        <TextField className="ProfileInputs" name={key} type={formArray[key]} sx={{width: "100%"}}  onKeyUp={HandleInput} label={key} variant="outlined" />
-                                        
+                                        <TextField className={styles.profileInputs} name={key} type={formArray[key]} sx={{width: "100%"}} onKeyUp={handleInput} label={key} variant="outlined" />
                                     </Grid>
                                 );
                             })
 
                         }
-                        <Grid item sx = {{display: "flex", width: "100%"}}  md={6} lg={4} padding={1} >
-
-                            <FormControl fullWidth focused>
-                            <InputLabel variant="standard" sx = {{display: "flex", width: "100%"}}   >
-                                Department
-                            </InputLabel>
-                            <NativeSelect
-                                defaultValue={"SELECT"}
-                                inputProps={{
-                                name: 'Department',
-                                id: 'uncontrolled-native',
-                                }}
-                            >
-                                <option value="">
-                                    <em>None</em>
-                                </option>
-                                <option value={1}>Software Developement</option>
-                                <option value={2}>Human Resource</option>
-                                <option value={3}>Management</option>
-                                <option value={4}>Finance</option>
-                            </NativeSelect>
-                            </FormControl>  
-                                        
-                        </Grid>
                     </Grid>
-                    
+
                     <Grid container maxWidth sx = {{display: "flex", width: "100%"}} justifyContent="center" alligncontent="center">
                         <Grid item xs={12} md={6} lg = {4} padding = {1}>
                             {
-                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained">Submit</Button>):(<Button className={styles.submitButton} variant="outlined">Submit</Button>)
+                                submitState?(<Button className={styles.submitButton} type='submit' variant="contained">Submit</Button>):(<Button className={styles.submitButton} variant="outlined">Submit</Button>)
                             }
                         </Grid>
                     </Grid>
