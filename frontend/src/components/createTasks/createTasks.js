@@ -1,5 +1,5 @@
 import react from "react";
-import { Button, Divider, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, Switch, TextField, NativeSelect } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, TextField, NativeSelect } from '@mui/material';
 import styles from "./createTasks.module.css";
 
 
@@ -11,9 +11,6 @@ export default function CreateTasks(props){
             'Start Date' : 'date',
             'Time Taken' : 'number',
         }
-
-    const TaskType = ['Meeting', 'Working', 'Break'];
-
         const HandleInput = (event) => {
             let elements = document.getElementsByClassName("ProfileInputs");
             for(let i = 0; i < elements.length; i++){
