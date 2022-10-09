@@ -56,7 +56,16 @@ async function Login (req, res, value) {
         const token = jwt.sign({ id: user.EmailId, Eid: user.EmployeeId, isAdmin: user.IsAdmin, isBlock: user.IsBlocked }, process.env.JWT_SECRET, { expiresIn: '1d' })
         res.send({
           success: true,
-          data: {"token": token}
+          data: {
+            "token": token,
+            Name: user.Name,
+            EmailId: user.EmailId,
+            IsAdmin: user.IsAdmin,
+            ContactNo: user.ContactNo,
+            Department: user.Department,
+            JoiningDate: user.JoiningDate,
+            EmployeeId: user.EmployeeId
+          }
         })
       }
     })
