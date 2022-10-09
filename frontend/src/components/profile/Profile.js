@@ -10,7 +10,6 @@ function capitalize( value){
 }
 
 export default function Profile(props){
-    console.log(props.userdata);
     const [submitState, setSubmit] = React.useState(false);
     const [sampledata, setSampleData] = React.useState({
         'Employee Id' : props.userdata.EmployeeId,
