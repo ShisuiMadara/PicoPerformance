@@ -31,6 +31,7 @@ async function Login (req, res, value) {
             success: false,
             message : 'Unknown Error'
           })
+	console.log(erro.message)
         return 0
       }
       const user = result[0]
