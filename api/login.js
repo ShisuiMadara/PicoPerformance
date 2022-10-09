@@ -36,7 +36,8 @@ async function Login (req, res, value) {
       }
       const user = result[0]
       if (user) {
-        if (user.isBlocked){
+        console.log(user)
+        if (user.IsBlocked){
           return res.status(403).send({
             success: false,
             message : 'User is Blocked'
