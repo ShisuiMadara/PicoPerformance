@@ -1,6 +1,5 @@
 import react from "react";
-import { Grid, TextField } from "@mui/material";
-import Button from '@mui/material/Button';
+import { Button, Divider, FormControl, FormControlLabel, FormGroup, Grid, InputLabel, MenuItem, Select, Switch, TextField } from '@mui/material';
 import styles from "./createTasks.module.css";
 
 
@@ -11,8 +10,9 @@ export default function CreateTasks(props){
             'Task Description' : 'text',
             'Start Date' : 'date',
             'Time Taken' : 'number',
-            'Task Type' : 'text'
         }
+
+    const TaskType = ['Meeting', 'Working', 'Break'];
 
         const HandleInput = (event) => {
             let elements = document.getElementsByClassName("ProfileInputs");
@@ -45,7 +45,28 @@ export default function CreateTasks(props){
                                     </Grid>
                                 );
                             })
-                        }
+}
+                            <Grid item sx={12} md={6} lg={6} px={3} py={4} key = "Select Task Type">
+                            <InputLabel sx={{width: "100%"}} focused>Task Type</InputLabel>
+                                    <Select sx={{width: "100%"}}
+                                        label="Select TaskType"
+                                    >
+                                        <MenuItem sx={{width: "100%"}}>Select Task Type</MenuItem>
+                                        {
+                                           
+                                                TaskType.map((item) => {
+                                                    return (
+                                                        <MenuItem sx={{width: "100%"}}>{item}</MenuItem>
+                                                    );
+                                                })
+                                            
+                                        }
+                                    </Select> 
+                            </Grid>
+                        
+
+                          
+                        
                     </Grid>
                     <Grid container maxWidth sx = {{display: "flex"}} justifyContent="center" alligncontent="center">
                         <Grid item xs={12} md={6} lg = {4} padding = {1}>
