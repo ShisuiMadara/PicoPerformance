@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const mysql = require('mysql')
-
+//done
 async function validatePassword (plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword)
 }
@@ -17,14 +17,20 @@ async function Login (req, res, value) {
 
   con.connect((err) => {
     if (err) {
-      res.status(400).send('Datbase Error')
+      res.status(400).send({
+        success: false,
+        message : 'Database Error'
+      })
       return 0
     }
     console.log('Connected!')
     const sql = 'SELECT * FROM Employee WHERE EmailId = "' + value + '"'
     con.query(sql, async function (erro, result) {
       if (erro) {
-        res.status(400).send('Unknown Error')
+        res.status(400).send({
+            success: false,
+            message : 'Unknown Error'
+          })
         return 0
       }
       const user = result[0]
@@ -32,12 +38,18 @@ async function Login (req, res, value) {
         console.log(req.body.Password)
         const validPass = await validatePassword(req.body.Password, user.PasswordHash)
         if (!validPass) {
-          res.status(400).send('Email or Password is wrong')
+          res.status(400).send({
+            success: false,
+            message : 'Email or Password is wrong'
+          })
           return 0
         }
   
-        const token = jwt.sign({ id: user.EmailId, Eid: user.EmployeeId, isAdmin: user.IsAdmin }, process.env.JWT_SECRET)
-        res.header('auth-token', token).send({ token })
+        const token = jwt.sign({ id: user.EmailId, Eid: user.EmployeeId, isAdmin: user.IsAdmin, isBlock: user.IsBlocked }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        res.send({
+          success: true,
+          data: {"token": token}
+        })
       }
     })
   })
@@ -55,7 +67,10 @@ async function login (req, res, next) {
     }
   } catch (err) {
     next(err)
-    res.status(400).send(err)
+    res.status(400).send({
+      success: false,
+      message : err
+    })
   }
 }
 

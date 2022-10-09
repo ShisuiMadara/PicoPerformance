@@ -20,7 +20,7 @@ async function filter (req, res) {
       return 0
     }
     console.log('Connected!')
-    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + '" AND "' + endDate + '" AND EmployeeId=' + Usr
+    const sql = 'SELECT * FROM Tasks WHERE StartDate BETWEEN "' + startDate + ' 00:00:00" AND "' + endDate + ' 23:59:59" AND EmployeeId=' + Usr
 
     con.query(sql, function (erro, result) {
       if (erro) {
@@ -30,7 +30,6 @@ async function filter (req, res) {
       if (result.length === 0) {
         res.status(404).send('No record in database')
       }
-      console.log('Number of records inserted: ' + result.affectedRows)
       res.send(result)
     })
   })

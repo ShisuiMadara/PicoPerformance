@@ -13,22 +13,21 @@ function capitalize( value){
 
 export default function Profile(props){
     const sampledata = {
+        'Employee Id' : "Ashutosh Gangwar",
         'Name' : "Ashutosh Gangwar",
         'Eamil' : "Ashutosh Gangwar",
-        'Contact' : "Ashutosh Gangwar",
-        'Password' : "Ashutosh Gangwar",
-        'Employee Id' : "Ashutosh Gangwar"
+        'Contact' : "Ashutosh Gangwar"
     }
     const formArray = {
         'Email' : "text",
         'Contact' : 'phone',
-        'Password' : "password",
+        'Password' : "password"
     }
     const HandleInput = (event) => {
         let elements = document.getElementsByClassName("ProfileInputs");
         for(let i = 0; i < elements.length; i++){
             const value = elements[i].children[1].children[0].value;
-            if(value!="" && value!=null){
+            if(value!== "" && value!=null){
                 setSubmit(true);
                 return true;
             }
@@ -57,38 +56,38 @@ export default function Profile(props){
                 md: 3,
                 lg: 5,
             }}>
-                <Grid container maxWidth>
-                    <Grid item xs={12} padding = {1}>
+                <Grid container maxWidth sx = {{display: "flex", width: "100%"}}>
+                    <Grid sx = {{display: "flex", width: "100%"}} item xs={12} padding = {1}>
                         <Typography variant = "h5" padding = {1}>
                             <b>Your Profile</b>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md = {4} padding = {{
+                    <Grid sx = {{ width: "100%"}} item xs={12} md = {4} padding = {{
                         xs: 2,
                         md: 3,
                         lg: 5,
-                    }} sx = {{display: "flex"}} alignContent = "center" justifyContent="center">
+                    }} alignContent = "center" justifyContent="center">
                         <Avatar sx = {{width: 200, height: 200, bgcolor: "orange"}}></Avatar>
                     </Grid>
-                    <Grid item xs={12} md={8} padding={{
+                    <Grid sx = {{ width: "100%"}} item xs={12} md={8} padding={{
                         xs: 2,
                         md: 3,
                         lg: 5,
                     }}>
                           {Object.keys(sampledata).map((key, index) =>{
                                     return(
-                                        <Grid container maxWidth key={index} padding={1}>
-                                            <Grid item xs={2} sx={{display: "flex"}} alignContent="left" justifyContent="left">
+                                        <Grid container maxWidth  key={index} padding={1}>
+                                            <Grid item xs={2} lg={2} sx={{display: "flex", width: "100%"}} alignContent="left" justifyContent="left">
                                                 <Typography variant="h6">
                                                     <b>{capitalize(`${key}`)}</b>
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={2} sx={{display: "flex"}} alignContent="center" justifyContent="center">
+                                            <Grid item xs={10} lg={2} sx = {{display: "flex", width: "100%", textAlign: 'left'}} padding={1} alignContent="center" justifyContent="center">
                                                 <Typography variant="h6">
                                                     <b>:</b>
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={8} sx={{display: "flex"}} alignContent="left" justifyContent="left">
+                                            <Grid item xs={12} lg={8} sx = {{display: "flex", width: "100%"}}  padding={1} alignContent="left" justifyContent="left">
                                                 <Typography variant="h6">
                                                     {sampledata[key]}
                                                 </Typography>
@@ -111,21 +110,21 @@ export default function Profile(props){
                     <b>Update Profile</b>
                 </Typography>
                 <form style = {{width: "100%"}}>
-                    <Grid container maxWidth sx = {{display: "flex"}} justifyContent = "center" alignContent = "center">
+                    <Grid container maxWidth sx = {{display: "flex", width: "100%"}} justifyContent = "center" alignContent = "center">
                         {
                             Object.keys(formArray).map((key, index) =>{
                                 return(
-                                    <Grid item sx={12} md={6} lg={4} padding={1} key={key}>
+                                    <Grid item sx = {{display: "flex", width: "100%"}}  md={6} lg={4} padding={1} key={key}>
                                         <TextField className="ProfileInputs" name={key} type={formArray[key]} sx={{width: "100%"}}  onKeyUp={HandleInput} label={key} variant="outlined" />
                                     </Grid>
                                 );
                             })
                         }
                     </Grid>
-                    <Grid container maxWidth sx = {{display: "flex"}} justifyContent="center" alligncontent="center">
+                    <Grid container maxWidth sx = {{display: "flex", width: "100%"}} justifyContent="center" alligncontent="center">
                         <Grid item xs={12} md={6} lg = {4} padding = {1}>
                             {
-                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained">Submit</Button>):(<Button className={styles.submitButton} disabled variant="outlined">Submit</Button>)
+                                submitState?(<Button className={styles.submitButton} onClick={handleSubmit} variant="contained">Submit</Button>):(<Button className={styles.submitButton} variant="outlined">Submit</Button>)
                             }
                         </Grid>
                     </Grid>

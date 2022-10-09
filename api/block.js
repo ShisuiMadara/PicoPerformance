@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+//done
 function handler(req, res) {
     var con = mysql.createConnection({
         host: "localhost",
@@ -8,20 +9,33 @@ function handler(req, res) {
     });
     req = req.body
     var blk = '0'
-    if(req.Block === true) {blk = '1'}
+    var Blocked = 'Unblocked'
+    if(req.Block === true) {
+        blk = '1'
+        Blocked = 'Blocked'
+    }
     console.log(blk);
     con.connect(async (err)=>{
         if (err) {
-            res.status(400).send("Datbase Error");
+            res.status(400).send({
+                message: "Datbase Error",
+                success: false
+            });
             return 0
         }
         var sql = "Update Employee Set IsBlocked=" + blk + " where EmailId='" + req.EmailId + "'";
         con.query(sql, function (erro, result) {
             if (erro) {
-                res.status(400).send('Query Error');
+                res.status(400).send({
+                    success: false,
+                    message: 'Query Error'
+                });
                 return 0;
             }
-            res.send('User Blocked Successfully!');
+            res.send({
+                message: 'User ' +  Blocked + ' Successfully!',
+                success: true
+            });
         });
     })
 }

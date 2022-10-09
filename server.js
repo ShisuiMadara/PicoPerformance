@@ -20,7 +20,10 @@ app.use((req, res, next) => {
     return
   }
   let token = req.header('Authorization')
-  if (!token) return res.status(401).send('Access Denied')
+  if (!token) return res.status(401).send({
+    message: 'Access Denied',
+    success: false
+  })
 
   try {
     if (token.startsWith('Bearer ')) {
@@ -29,22 +32,35 @@ app.use((req, res, next) => {
     const verified = jwt.verify(token, process.env.JWT_SECRET)
     console.log(verified.isAdmin)
     if (verified.isAdmin == 0) {
+      if (verified.isBlock) return res.status(403).send({
+        message: 'User is deactivated',
+        success: false
+    })
       if (req.body.EmployeeId){
         if (req.body.EmployeeId != verified.Eid) {
-          return res.status(401).send('Access Denied')
+          return res.status(401).send({
+            success: false,
+            message : 'Access Denied'
+          })
         }
       }
       if (req.body.EmailId){
         console.log('aa')
         if (req.body.EmailId != verified.id) {
-          return res.status(401).send('Access Denied')
+          return res.status(401).send({
+            success: false,
+            message : 'Access Denied'
+          })
         }
       } 
     }
     req.user = verified
     next()
   } catch (err) {
-    res.status(400).send('Invalid Token')
+    res.status(400).send({
+      message: 'Invalid Token',
+      success: false
+  })
   }
 })
 

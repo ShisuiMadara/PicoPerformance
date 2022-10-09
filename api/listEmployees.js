@@ -1,9 +1,12 @@
 const mysql = require('mysql')
-
+//done
 async function getAll (req, res) {
   console.log(req.user)
   if (req.user.isAdmin == 0) {
-    res.status(401).send('Access Denied')
+    res.status(403).send({
+      message: 'Access Denied',
+      success: false
+  })
     return
   }
   const con = mysql.createConnection({
@@ -15,18 +18,29 @@ async function getAll (req, res) {
 
   con.connect((err) => {
     if (err) {
-      res.status(400).send('Datbase Error')
+      res.status(400).send({
+        message: 'Datbase Error',
+        success: false
+    })
       return 0
     }
     console.log('Connected!')
     const sql = 'SELECT * FROM Employee WHERE IsAdmin = 0'
     con.query(sql, function (erro, result) {
       if (erro) {
-        res.status(400).send('Unknown Error')
+        res.status(400).send({
+          message: 'Unknown Error',
+          success: false
+      })
         return 0
       }
       console.log('Number of records inserted: ' + result.affectedRows)
-      res.send(result)
+      res.send({
+        success: true,
+        data: {
+          list: result
+        }
+    })
     })
   })
 }
