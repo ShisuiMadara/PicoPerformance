@@ -192,17 +192,17 @@ export default class UserGraphs extends react.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: false,
-            er: true,
-            data: {},
+            loaded: [false, false, true],
+            er: [true, true, false],
+            data: [{}, {}, {}],
             filter: props.filter
         }
     }
     componentWillReceiveProps(props) {
         if(this.state.filter != props.filter || this.state.user != props.user) {
             this.setState({
-                loaded: false,
-                err: true,
+                loaded: [false, false, true],
+                err: [true, true, false],
                 filter: props.filter
             })
             axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
@@ -215,27 +215,72 @@ export default class UserGraphs extends react.Component {
                 }
             }).then((response)=>{
                 if (response.data.success === true){
+                    var ldd = this.state.loaded
+                    var errd = this.state.errd
+                    var datadd = this.state.data
+                    ldd[0] = true
+                    errd[0] = false
+                    datadd[0] = response.data.data.Details
                     this.setState({
-                        loaded: true,
-                        er: false,
-                        data: response.data.data.Details,
+                        loaded: ldd,
+                        er: errd,
+                        data: datadd,
                     });
                 }
             }).catch((err) =>{
                 if(err) {
+                    var ldd = this.state.loaded
+                    var errd = this.state.errd
+                    ldd[0] = true
+                    errd[0] = true
                     this.setState({
-                        loaded: true,
-                        er: true,
+                        loaded : ldd,
+                        er : errd,
+                    })
+                }
+            })
+            axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
+                "EmployeeId" : props.user.EmployeeId,
+                "StartDate" : props.filter[0] + ' 00:00:00',
+                "EndDate": props.filter[1] + ' 23:59:59',
+                "Yesterday" : true
+            },{
+                headers: {
+                    Authorization: `Bearer ${props.user.token}`
+                }
+            }).then((response)=>{
+                if (response.data.success === true){
+                    var ldd = this.state.loaded
+                    var errd = this.state.errd
+                    var datadd = this.state.data
+                    ldd[1] = true
+                    errd[1] = false
+                    datadd[1] = response.data.data.Details
+                    this.setState({
+                        loaded: ldd,
+                        er: errd,
+                        data: datadd,
+                    });
+                }
+            }).catch((err) =>{
+                if(err) {
+                    var ldd = this.state.loaded
+                    var errd = this.state.errd
+                    ldd[1] = true
+                    errd[1] = true
+                    this.setState({
+                        loaded : ldd,
+                        er : errd,
                     })
                 }
             })
         }
     }
     render() {
-        if(this.state.loaded === false) {
+        if(this.state.loaded[0] === false || this.state.loaded[1] === false || this.state.loaded[2] === false) {
             return <>Loading Charts...</>
         }
-        if (this.state.er){
+        if (this.state.er[0] || this.state.er[1] || this.state.er[2]){
             return(
                 <text>Chart Cannot Be displayed!</text>
             )
@@ -245,10 +290,10 @@ export default class UserGraphs extends react.Component {
             <>
                 <Grid container maxWidth={true} sx={{display: 'flex'}} alignContent={'center'} alignItems={'center'}>
                     <Grid className={styles.graph} item xs={12} lg={4} sx={{textAlign: 'center', width: '100%'}} >
-                        <PieChartToday data={this.state.data} user={this.props.user} filter={this.state.filter} />
+                        <PieChartToday data={this.state.data[0]} user={this.props.user} filter={this.state.filter} />
                     </Grid>
                     <Grid className={styles.graph} item xs={12} lg={4} sx={{textAlign: 'center', width: '100%'}}>
-                        <PieChartYesterDay data={this.state.data} user={this.props.user} filter={this.state.filter}/>
+                        <PieChartYesterDay data={this.state.data[1]} user={this.props.user} filter={this.state.filter}/>
                     </Grid>
                     <Grid className={styles.graph} item xs={12} lg={4} sx={{textAlign: 'center', width: '100%'}}>
                         Graph 3
