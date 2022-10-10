@@ -25,6 +25,7 @@
     "react-helmet": "^6.1.0",
     "react-icons": "^4.4.0",
     "react-scripts": "5.0.1",
+    "recharts": "^2.1.14",
     "styled-components": "^5.3.6",
     "util": "^0.12.4",
     "web-vitals": "^2.1.4"
