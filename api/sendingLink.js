@@ -16,7 +16,7 @@ async function sendEmail (email, token) {
     from: 'picoPerformance@gmail.com',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
-    html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/reset-password?token=' + token + '>link</a> to reset your password</p>'
+    html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/reset-password?token=' + token + '">link</a> to reset your password</p>'
   })
 
   console.log('Message sent: %s', info.messageId)
