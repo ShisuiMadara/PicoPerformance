@@ -66,7 +66,7 @@ const Dashboard = (props) => {
     // changed ui for employee
     locations = {
       Home:           [ "", "/"],
-      "Tasks":        [ "", <UTasks token={userdata.token} />],
+      "Tasks":        [ "", <UTasks token={userdata.token} EmployeeId={userdata.EmployeeId} />],
       "Profile":      [ "", <Profile userdata={userdata} />],
       "Create Task":              ["", <CreateTasks token={userdata.token} EmployeeId={userdata.EmployeeId}/>],
       Logout:         [ "", "Logout"],

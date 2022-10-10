@@ -2,37 +2,46 @@ import {
   Button,
   Divider,
   FormControl,
-  FormControlLabel,
-  FormGroup,
   Grid,
   InputLabel,
   MenuItem,
   Select,
-  Switch,
-  TextField,
   Pagination,
+  TextField,
 } from "@mui/material";
 import react from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import UserGraphs from "../userGraphs/userGraphs";
 import CollapsibleTable from "../taskTable/CollapsibleTable";
-
+import axios from 'axios';
 import styles from "./tasks.module.css";
 
 export default class UTasks extends react.Component {
-  wrapLoginOpen = () => {
-    const element = document.getElementsByClassName(styles.loginWrapper);
-    element[0].style.zIndex = "100";
-  };
-  wrapLoginClose = () => {
-    const element = document.getElementsByClassName(styles.loginWrapper);
-    element[0].style.zIndex = "-100";
-  };
-
-  changeFilter = (event) => {
+  handleStartDateChange = (newValue) => {
     this.setState({
-      filter: event.target.value,
+        valueDateStart: newValue
+      });
+  };
+  handleEndDateChange = (newValue) => {
+    this.setState({
+      valueDateEnd: newValue
     });
+};
+  changeFilter = (event) => {
+    if(event.target.value === 'Select Filter') {
+      this.setState({
+        filter: event.target.value,
+        currentTasks: this.state.tasks
+      });
+    } else {
+      this.setState({
+        filter: event.target.value,
+      });
+    }
   };
 
   changePage = (event, value) => {
@@ -49,19 +58,56 @@ export default class UTasks extends react.Component {
       currentTasks: tasks,
     });
   };
+  const
 
   filterDate = (event) => {
     event.preventDefault();
-    console.log(event);
+    var startDate = event.target.startDate.value;
+    startDate = `${startDate.slice(6, 11)}-${startDate.slice(0, 2)}-${startDate.slice(3, 5)} 00:00:00`;
+    var endDate = event.target.endDate.value;
+    endDate = `${endDate.slice(6, 11)}-${endDate.slice(0, 2)}-${endDate.slice(3, 5)} 23:59:59`;
+    axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/getAllTasks', {
+      Search: true,
+      EmployeeId: this.props.EmployeeId,
+      StartDate: startDate,
+      EndDate: endDate
+    }, {
+        headers: {
+            Authorization: `Bearer ${this.props.token}`
+        }
+    }).then((response) => {
+        if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+          this.setState({
+              currentTasks: response.data.data.Tasks
+            })
+        } else {
+            alert('Unable to fetch tasks! please try later.');
+        }
+    }).catch((error) => {
+        if(error.data !== null && error.data !== undefined && error.data.success === false) {
+            alert(error.data.message);
+        } else {
+            alert('Server error!');
+        }
+    });
   };
+
   constructor(props) {
     super(props);
+    var now = new Date();
+    now = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (1 * 30 * 60 * 1000));
+    const initial = dayjs(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}T00:00:00`);
+    const userData = JSON.parse(sessionStorage.getItem("userInfo"));
     this.state = {
       filter: "Select Filter",
-      user: sessionStorage.getItem("userInfo"),
+      user: userData,
       tasks: [],
       currentTasks: [],
       page: 1,
+      filterData: [now, now],
+      currentDate: now,
+      valueDateStart: initial,
+      valueDateEnd: initial
     };
   }
 
@@ -104,24 +150,28 @@ export default class UTasks extends react.Component {
                     alignItems={"center"}
                   >
                     <Grid item xs={12} md={5}>
-                      <TextField
-                        name="startDate"
-                        type="date"
-                        sx={{ width: "100%" }}
-                        label="From"
-                        variant="outlined"
-                        focused
-                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="startDate"
+                          className={styles.profileInput}
+                          value={this.state.valueDateStart}
+                          onChange={this.handleStartDateChange}
+                          disableFuture={true}
+                          renderInput={(params) => <TextField id='startDate' name='startDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
+                        />
+                      </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} md={5}>
-                      <TextField
-                        name="endDate"
-                        type="date"
-                        sx={{ width: "100%" }}
-                        label="To"
-                        variant="outlined"
-                        focused
-                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="endDate"
+                          className={styles.profileInput}
+                          value={this.state.valueDateEnd}
+                          onChange={this.handleEndDateChange}
+                          disableFuture={true}
+                          renderInput={(params) => <TextField id='endDate' name='endDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
+                        />
+                      </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} md={2}>
                       <Button
@@ -149,12 +199,13 @@ export default class UTasks extends react.Component {
           this.state.selectedUser === "Select User" ? (
             <></>
           ) : (
-            <Grid item xs={12}>
-              <UserGraphs
-                user={this.state.user}
-                filter={this.state.filterData}
-              />
-            </Grid>
+            <></>
+            // <Grid item xs={12}>
+            //   <UserGraphs
+            //     user={this.state.user}
+            //     filter={this.state.filterData}
+            //   />
+            // </Grid>
           )}
 
           <Grid item xs={12}>
@@ -205,7 +256,30 @@ export default class UTasks extends react.Component {
     );
   }
   componentDidMount() {
-    if (this.state.tasks.length !== 0) {
+    if (this.state.tasks.length === 0) {
+      axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/getAllTasks', {
+        Search: false,
+        EmployeeId: this.props.EmployeeId
+      }, {
+          headers: {
+              Authorization: `Bearer ${this.props.token}`
+          }
+      }).then((response) => {
+          if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+            this.setState({
+                tasks: response.data.data.Tasks,
+                currentTasks: response.data.data.Tasks
+              })
+          } else {
+              alert('Unable to fetch tasks! please try later.');
+          }
+      }).catch((error) => {
+          if(error.data !== null && error.data !== undefined && error.data.success === false) {
+              alert(error.data.message);
+          } else {
+              alert('Server error!');
+          }
+      });
       this.changePage(null, 1);
     }
   }

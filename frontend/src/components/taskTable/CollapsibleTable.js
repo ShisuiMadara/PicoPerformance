@@ -22,7 +22,7 @@ function createData(task, employee) {
     EmailId: employee.EmailId,
     Task: [
       {
-        Date: task.startDate,
+        Date: task.StartDate.slice(0, 10),
         'Time Taken': task.TimeTaken,
         'Task Type': task.TaskType,
         Description: task.TaskDescription
