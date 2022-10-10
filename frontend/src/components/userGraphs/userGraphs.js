@@ -175,25 +175,96 @@ class PieChartYesterDay extends react.Component{
     }
 }
 
-// class StackedChart extends react.Component{
-//     constructor(props){
-//         super(props);
-//         this.state={
-//             data:{}
-//         }
-//     }
-//     render(){
-//         var er = false;
+class StackedChart extends react.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            filter: props.filter,
+            data: props.data
+        }
+    }
+    componentWillReceiveProps(props) {
+        if(props.filter != this.state.filter) {
+            this.setState({
+                filter: props.filter,
+                data: props.data
+            })
+        }
+    }
+    render(){
+        const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+        const chartData = [
+            {
+                "name" : "Break",
+                "value" : this.props.data.Break.Sum == null ? 0 : this.props.data.Break.Sum
+            },
+            {
+                "name" : "Meeting",
+                "value" : this.props.data.Meeting.Sum == null ? 0 : this.props.data.Meeting.Sum
+            },
+            {
+                "name" : "Work",
+                "value" : this.props.data.Work.Sum == null ? 0 : this.props.data.Work.Sum
+            }
+        ]
+        const tooltipData=[
+            {
+                "name" : "Break Time",
+                "value" : this.props.data.Break.Sum,
+                "value2": this.props.data.Break.Count
+            },
+            {
+                "name" : "Meeting Time",
+                "value" : this.props.data.Meeting.Sum,
+                "value2" : this.props.data.Meeting.Count
+            },
+            {
+                "name" : "Work Time",
+                "value" : this.props.data.Work.Sum,
+                "value2" : this.props.data.Work.Count
+            }
+        ]
+        console.log(tooltipData)
+        return (
+            <PieChart width={400} height={400}>
+              <Pie
+                data={chartData}
+                cx={180}
+                cy={200}
+                labelLine={false}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value, name, item, index, payload) => {
+                if (name === 'Break'){
+                    value = value + ' minutes (' + tooltipData[0].value2 + ' Entries)'
+                }
+                else if (name == 'Meeting'){
+                    value = value + ' minutes (' + tooltipData[1].value2 + ' Entries)'
+                }
+                else{
+                    value = value + ' minutes (' + tooltipData[2].value2 + ' Entries)'
+                }
+                return [value, name]
+              }} />
+              <Legend className={styles.legend} />
+            </PieChart>
+          );
+    }
+}
 
-//     }
-// }
 
 export default class UserGraphs extends react.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: [false, false, true],
-            er: [true, true, false],
+            loaded: [false, false, false],
+            er: [true, true, true],
             data: [{}, {}, {}],
             filter: props.filter
         }
@@ -201,8 +272,8 @@ export default class UserGraphs extends react.Component {
     componentWillReceiveProps(props) {
         if(this.state.filter != props.filter || this.state.user != props.user) {
             this.setState({
-                loaded: [false, false, true],
-                er: [true, true, false],
+                loaded: [false, false, false],
+                er: [true, true, true],
                 filter: props.filter
             })
             axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
@@ -270,6 +341,40 @@ export default class UserGraphs extends react.Component {
                     var errd = this.state.er
                     ldd[1] = true
                     errd[1] = true
+                    this.setState({
+                        loaded : ldd,
+                        er : errd,
+                    })
+                }
+            })
+            axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/stackchart', {
+                "EmployeeId" : props.user.EmployeeId,
+                "EndDate": props.filter[1],                
+            },{
+                headers: {
+                    Authorization: `Bearer ${props.user.token}`
+                }
+            }).then((response)=>{
+                if (response.data.success === true){
+                    var ldd = this.state.loaded
+                    var errd = this.state.er
+                    var datadd = this.state.data
+                    ldd[2] = true
+                    errd[2] = false
+                    datadd[2] = response.data.data.Chart
+                    this.setState({
+                        loaded: ldd,
+                        er: errd,
+                        data: datadd,
+                    });
+                }
+            }).catch((err) =>{
+                if(err) {
+                    console.log(err)
+                    var ldd = this.state.loaded
+                    var errd = this.state.er
+                    ldd[2] = true
+                    errd[2] = true
                     this.setState({
                         loaded : ldd,
                         er : errd,
