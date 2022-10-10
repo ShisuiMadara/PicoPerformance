@@ -103,7 +103,8 @@ class PieChartYesterDay extends react.Component{
         }
     }
     render(){
-        if (this.props.filter[0] != this.props.filter[1]){
+        if (this.props.filter[0].slice(0, 10) != this.props.filter[1].slice(0,10)){
+            console.log(this.props.filter)
             return(
                 <text>Chart is not availabe when filter spans more than 1 date</text>
             )
