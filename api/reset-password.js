@@ -50,6 +50,12 @@ async function updatePassword (req, res) {
 
       console.log('Token dropped successfully')
     })
+
+    res.status(200).send({
+      message: 'Email with reset link has been sent',
+      success: true
+    })
+    con.end()
   })
 }
 
