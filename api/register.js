@@ -26,14 +26,19 @@ async function handler (req, res) {
     const sql = 'INSERT INTO Employee(Name, EmailId, ContactNo, Department, JoiningDate, PasswordHash) VALUES ?'
     con.query(sql, [user], function (erro, result) {
       if (erro) {
-        if (erro.code = 'ER_DUP_ENTRY') res.status(400).send({
-          message: 'Email Already Exists',
-          success: false
-        })
-        else res.status(400).send({
-          message: 'Unknown Error',
-          success: false
-        })
+        if (erro.code = 'ER_DUP_ENTRY') {
+          res.status(400).send({
+            message: 'Email Already Exists',
+            success: false
+          })
+          con.end()
+        } else {
+          res.status(400).send({
+            message: 'Unknown Error',
+            success: false
+          })
+          con.end()
+        }
         return 0
       }
       console.log('Number of records inserted: ' + result.affectedRows)
@@ -41,6 +46,7 @@ async function handler (req, res) {
         message: 'User created Successfully!',
         success: true
       })
+      con.end()
     })
   })
 }

@@ -1,7 +1,7 @@
 const mysql = require('mysql')
 const randtoken = require('rand-token')
 const nodemailer = require('nodemailer')
-//done
+// done
 async function sendEmail (email, token) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.mailgun.org',
@@ -74,6 +74,7 @@ function sendMailToEmail (req, res) {
       message: 'Email with reset link has been sent',
       success: true
     })
+    con.end()
   })
 }
 

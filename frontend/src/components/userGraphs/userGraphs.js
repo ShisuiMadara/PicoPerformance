@@ -24,15 +24,15 @@ class PieChartToday extends react.Component{
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
         const chartData = [
             {
-                "name" : "Break Time",
+                "name" : "Break",
                 "value" : this.props.data.Break.Sum == null ? 0 : this.props.data.Break.Sum
             },
             {
-                "name" : "Meeting Time",
+                "name" : "Meeting",
                 "value" : this.props.data.Meeting.Sum == null ? 0 : this.props.data.Meeting.Sum
             },
             {
-                "name" : "Work Time",
+                "name" : "Work",
                 "value" : this.props.data.Work.Sum == null ? 0 : this.props.data.Work.Sum
             }
         ]
@@ -53,6 +53,7 @@ class PieChartToday extends react.Component{
                 "value2" : this.props.data.Work.Count
             }
         ]
+        console.log(tooltipData)
         return (
             <PieChart width={400} height={400}>
               <Pie
@@ -103,7 +104,8 @@ class PieChartYesterDay extends react.Component{
         }
     }
     render(){
-        if (this.props.filter[0] != this.props.filter[1]){
+        if (this.props.filter[0].slice(0, 10) != this.props.filter[1].slice(0,10)){
+            console.log(this.props.filter)
             return(
                 <text>Chart is not availabe when filter spans more than 1 date</text>
             )
@@ -111,15 +113,15 @@ class PieChartYesterDay extends react.Component{
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
         const chartData = [
             {
-                "name" : "Break Time",
+                "name" : "Break",
                 "value" : this.props.data.Break.Sum == null ? 0 : this.props.data.Break.Sum
             },
             {
-                "name" : "Meeting Time",
+                "name" : "Meeting",
                 "value" : this.props.data.Meeting.Sum == null ? 0 : this.props.data.Meeting.Sum
             },
             {
-                "name" : "Work Time",
+                "name" : "Work",
                 "value" : this.props.data.Work.Sum == null ? 0 : this.props.data.Work.Sum
             }
         ]
@@ -197,7 +199,7 @@ export default class UserGraphs extends react.Component {
         }
     }
     componentWillReceiveProps(props) {
-        if(this.state.filter != props.filter) {
+        if(this.state.filter != props.filter || this.state.user != props.user) {
             this.setState({
                 loaded: false,
                 err: true,

@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-//redundant
+// redundant
 async function search (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
@@ -23,10 +23,13 @@ async function search (req, res) {
     con.query(sql, async function (erro, result) {
       if (erro) {
         res.status(400).send('Unknown Error')
+        con.end()
         return 0
       }
 
       res.send(result)
+      con.end()
+      return 0
     })
   })
 }
