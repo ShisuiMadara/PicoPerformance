@@ -1,13 +1,19 @@
 import React from "react";
-import {Grid, Button} from "@mui/material";
+import {Grid, Button, List, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
 import image from "../../icons/progress.jpeg";
+import CircleIcon from '@mui/icons-material/Circle';
+import CropSquareIcon from '@mui/icons-material/CropSquare';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion from '@mui/material/Accordion';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import Login from "../../components/wrapperLogin/login";
 
 import styles from "./home.module.css";
-import Login from "../../components/wrapperLogin/login";
+
 
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
@@ -73,6 +79,41 @@ const ImageMarked = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity'),
 }));
 
+const Accordion = styled((props) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `1px solid rgba(207, 117, 0, 0.5)`,
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&:before': {
+      display: 'none',
+    },
+  }));
+
+const AccordionSummary = styled((props) => (
+    <MuiAccordionSummary
+      expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(240, 165, 0, 0.5)'
+        : 'rgba(207, 117, 0, 0.5)',
+    flexDirection: 'row-reverse',
+    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+      transform: 'rotate(90deg)',
+    },
+    '& .MuiAccordionSummary-content': {
+      marginLeft: theme.spacing(1),
+    },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    padding: theme.spacing(2),
+    borderTop: '2px solid rgba(240, 165, 0, 0.5)',
+}));
 
 export default class Home extends React.Component {
     target = 'Know your employees better.';
@@ -98,10 +139,27 @@ export default class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            quote:  ''
+            quote:  '',
+            expanded: 'panel1'
         };
     }
     render() {
+        const handleChange = (panel) => (event, newExpanded) => {
+            this.setState({
+                expanded: newExpanded ? panel : false
+            });
+        };
+        const qna = {
+            'Q. Why can’t I register?' : 'Ans. Only admins can register new users. Kindly contact an admin.',
+            'Q. Why do I get 404 for some pages?' : 'Ans. Pages have role-based access. If you try to access to page visible to admin then you get 404.',
+            'Q. Why am I not a valid user?' : 'Ans. Tokens are valid only for one day. After its expiry, you need to log in again. This protects the security of the website.',
+            'Q. How do date filters work?' : 'Ans. After specifying the start and end date, one can access and plot the data of that particular time frame. The graphs get dynamically updated.',
+            'Q. What are the graphs showing?' : <>{'Of the two pie charts, one is shows the data for the "current day" or the selected filter range. While the second one shows data for the previous day and on selecting filtering fives null value.'}<br />{'The stack chart shows the data for the whole week in a stack bar graph. Each bar will represent one day.  Users can see the data of old weeks also through the filter. ONLY END DATE IS REQUIRED in this case.'}</>,
+        };
+        const listData = {
+            'Employee :' : ['Better time management', 'Improves work-life balance', 'Never miss a deadline', 'Grow to greater heights in career'],
+            'Employer :' : ['Get to know their employee better', 'Conserves resources', 'Make team more productive']
+        };
         const userinfo = JSON.parse(sessionStorage.getItem("userInfo"));
         return (
             <>
@@ -112,7 +170,7 @@ export default class Home extends React.Component {
                     <div className={styles.body}>
                         <Grid className={styles.container} container style={{ display: 'flex' }} alignContent={"center"} alignItems={"center"}>
                             <Grid item xs={12}>
-                                <Grid container className={styles.messageContainer} marginTop={5} padding={1}>
+                                <Grid container className={styles.messageContainer} padding={5}>
                                     <Grid item xs={1} sm={2} md={3}>
                                         {/* blank space */}
                                     </Grid>
@@ -148,8 +206,8 @@ export default class Home extends React.Component {
                                     <Grid item xs={0} sm={1} md={3}>
                                         {/* blank space */}
                                     </Grid>
-                                    <Grid padding={3} item xs={12} textAlign={'center'}>
-                                        {this.state.quote}
+                                    <Grid padding={3} item xs={12} textAlign={'center'} sx={{fontWeight: '600'}}>
+                                        <i>{this.state.quote}</i>
                                     </Grid>
                                     <Grid padding={3} item xs={12} textAlign={'center'}>
                                         <Grid container>
@@ -173,7 +231,11 @@ export default class Home extends React.Component {
                                         </Grid>
                                     </Grid>
                                     <Grid padding={3} item xs={12} textAlign={'center'}>
-                                        What does it offer ?
+                                        <p style={{fontWeight: '600'}}>
+                                            <i>
+                                                What does it offer ?
+                                            </i>
+                                        </p>
                                     </Grid>
                                     <Grid padding={3} item xs={12} textAlign={'center'}>
                                         <Grid container padding={5} spacing={3}>
@@ -185,9 +247,86 @@ export default class Home extends React.Component {
                                                 {/* content part 2 */}
                                                 Introducing PicoPerformance, a free task management and time analyzer tool. We provide you indepth information about the time break of the employee.
 Fed up of numbers? We provide interactive and dynamic graphs for better visualization and comparison. Now the employee as well as the employer can improve on how they spend their time.
-
                                             </Grid>
                                         </Grid>
+                                    </Grid>
+                                    <Grid padding={3} item xs={0} md={2} lg={4} textAlign={'center'}>
+                                            {/* white space */}
+                                    </Grid>
+                                    <Grid padding={3} sx={{width: '100%'}} item xs={12} md={8} lg={4} textAlign={'center'}>
+                                        <p style={{fontWeight: '600'}}>
+                                            <i>
+                                                This serves both as
+                                            </i>
+                                        </p>
+                                        <List>
+                                            {
+                                                Object.keys(listData).map((item, index) => {
+                                                    return (
+                                                        <ListItem key={`Title#${index}`}>
+                                                            <List>
+                                                                <ListItem sx={{width: '100%'}}>
+                                                                    <ListItemIcon>
+                                                                        <CircleIcon sx={{fontSize: 'small'}} />
+                                                                    </ListItemIcon>
+                                                                    <ListItemText primary={item} />
+                                                                </ListItem>
+                                                                <ListItem>
+                                                                    <List>
+                                                                    {
+                                                                        listData[item].map((lItem, index) => {
+                                                                            return (
+                                                                                <ListItem key={`listItem#${index}`} disablePadding style={{width: '100%', textAlign: 'right'}}>
+                                                                                    <ListItemIcon>
+                                                                                        <CropSquareIcon sx={{fontSize: 'x-small'}} />
+                                                                                    </ListItemIcon>
+                                                                                    <ListItemText primary={lItem} />
+                                                                                </ListItem>
+                                                                            );
+                                                                        })
+                                                                    }
+                                                                    </List>
+                                                                </ListItem>
+                                                            </List>
+                                                        </ListItem>
+                                                    );
+                                                })
+                                            }
+                                        </List>
+                                    </Grid>
+                                    <Grid padding={3} item xs={0} md={2} lg={4} textAlign={'center'}>
+                                            {/* white space */}
+                                    </Grid>
+                                    <Grid padding={3} item xs={0} md={2} lg={4} textAlign={'center'}>
+                                            {/* white space */}
+                                    </Grid>
+                                    <Grid padding={3} sx={{width: '100%'}} item xs={12} md={8} lg={4} textAlign={'center'}>
+                                        <Grid container maxWidth={true} sx={{textAlign: 'center'}} alignContent={'center'} alignItems={'center'}>
+                                            <Grid item xs={12} sx={{textAlign: 'center', fontWeight: '600'}} padding={2}>
+                                                <i>QNA</i>
+                                            </Grid>
+                                            <Grid item xs={12} padding={3}>
+                                                {
+                                                    Object.keys(qna).map((item, index) => {
+                                                        return (
+                                                            <Accordion expanded={this.state.expanded === `panel${index + 1}`} onChange={handleChange(`panel${index + 1}`)}>
+                                                                <AccordionSummary aria-controls={`panel${index + 1}d$-content`} id={`panel${index + 1}d-header`}>
+                                                                <Typography>{item}</Typography>
+                                                                </AccordionSummary>
+                                                                <AccordionDetails>
+                                                                <Typography>
+                                                                    {qna[item]}
+                                                                </Typography>
+                                                                </AccordionDetails>
+                                                            </Accordion>
+                                                        );
+                                                    })
+                                                }
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid padding={3} item xs={0} md={2} lg={4} textAlign={'center'}>
+                                            {/* white space */}
                                     </Grid>
                                 </Grid>
                             </Grid>
