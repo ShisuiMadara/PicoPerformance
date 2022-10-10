@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const mysql = require('mysql')
-//done
+// done
 async function validatePassword (plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword)
 }
@@ -19,7 +19,7 @@ async function Login (req, res, value) {
     if (err) {
       res.status(400).send({
         success: false,
-        message : 'Database Error'
+        message: 'Database Error'
       })
       return 0
     }
@@ -28,13 +28,14 @@ async function Login (req, res, value) {
     con.query(sql, async function (erro, result) {
       if (erro) {
         res.status(400).send({
-            success: false,
-            message : 'Unknown Error'
-          })
-	console.log(erro.message)
+          success: false,
+          message: 'Unknown Error'
+        })
+        console.log(erro.message)
+        con.end()
         return 0
       }
-      if (result.length === 0){
+      if (result.length === 0) {
         return res.status(400).send({
           success: false,
           message: 'Email ID or Password is Wrong!'
@@ -43,10 +44,10 @@ async function Login (req, res, value) {
       const user = result[0]
       if (user) {
         console.log(user)
-        if (user.IsBlocked){
+        if (user.IsBlocked) {
           return res.status(403).send({
             success: false,
-            message : 'User is Blocked'
+            message: 'User is Blocked'
           })
         }
         console.log(req.body.Password)
@@ -54,16 +55,17 @@ async function Login (req, res, value) {
         if (!validPass) {
           res.status(400).send({
             success: false,
-            message : 'Email ID or Password is Wrong!'
+            message: 'Email ID or Password is Wrong!'
           })
+          con.end()
           return 0
         }
-  
+
         const token = jwt.sign({ id: user.EmailId, Eid: user.EmployeeId, isAdmin: user.IsAdmin, isBlock: user.IsBlocked }, process.env.JWT_SECRET, { expiresIn: '1d' })
         res.send({
           success: true,
           data: {
-            "token": token,
+            token,
             Name: user.Name,
             EmailId: user.EmailId,
             IsAdmin: user.IsAdmin,
@@ -73,6 +75,7 @@ async function Login (req, res, value) {
             EmployeeId: user.EmployeeId
           }
         })
+        con.end()
       }
     })
   })
@@ -81,12 +84,11 @@ async function Login (req, res, value) {
 async function login (req, res, next) {
   try {
     const user = await Login(req, res, req.body.EmailId)
-    
   } catch (err) {
     next(err)
     res.status(400).send({
       success: false,
-      message : err
+      message: err
     })
   }
 }

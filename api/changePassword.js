@@ -40,6 +40,7 @@ async function changePassword (req, res) {
           message: 'Unknown Error',
           success: false
         })
+        con.end()
         return 0
       }
 
@@ -49,12 +50,16 @@ async function changePassword (req, res) {
           message: 'Query failed',
           success: false
         })
+        con.end()
+        return 0
       }
 
       res.status(200).send({
         success: true,
         message: 'Password Changed Successfully'
       })
+      con.end()
+      return 0
     })
   })
 }

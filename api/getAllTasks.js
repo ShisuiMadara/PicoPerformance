@@ -31,14 +31,9 @@ async function getAllTasks (req, res) {
           success: false,
           message: 'Unknown Error'
         })
+        con.end()
         return 0
       }
-      // if (result.length === 0) {
-      //   res.status(404).send({
-      //     message: 'No record in database',
-      //     success: false
-      //   })
-      // }
 
       res.send({
         success: true,
@@ -46,7 +41,8 @@ async function getAllTasks (req, res) {
           Tasks: result
         }
       })
-      end()
+      con.end()
+      return 0
     })
   })
 }

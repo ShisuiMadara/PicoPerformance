@@ -24,6 +24,7 @@ function updatePassword (req, res) {
 
     if (result.length === 0) {
       res.status(404).send('Token not found error')
+      con.end()
     }
     const PasswordHash = hashPassword(password)
 
@@ -31,6 +32,7 @@ function updatePassword (req, res) {
       if (err) throw err
       if (result.length === 0) {
         res.status(404).send('Token not found in database')
+        con.end()
       }
 
       console.log('Password updated successfully')
@@ -40,6 +42,7 @@ function updatePassword (req, res) {
       if (err) throw err
       if (result.affectedRows === 0) {
         res.status(400).send('Query failed')
+        con.end()
       }
 
       console.log('Token dropped successfully')

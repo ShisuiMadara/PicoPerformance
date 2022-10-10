@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-//done
+// done
 async function isValid (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
@@ -27,21 +27,24 @@ async function isValid (req, res) {
           message: 'Unknown Error',
           success: false
         })
+        con.end()
         return 0
       }
 
       if (result.length === 0) {
         console.log('Invalid user')
         res.status(404).send({
-          data : {verified: false},
+          data: { verified: false },
           success: true
         })
+        con.end()
       }
 
       res.send({
-        data : {verified: true},
+        data: { verified: true },
         success: true
       })
+      con.end()
     })
   })
 }

@@ -47,12 +47,15 @@ function handler (req, res) {
           success: false,
           message: 'Query Error'
         })
+        con.end()
         return 0
       }
       res.status(200).send({
         success: true,
         message: 'Task Added Successfully'
       })
+      con.end()
+      return 0
     })
   })
 }

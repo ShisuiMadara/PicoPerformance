@@ -30,12 +30,15 @@ function handler (req, res) {
           success: false,
           message: 'Query Error'
         })
+        con.end()
         return 0
       }
       res.send({
         message: 'User ' + Blocked + ' Successfully!',
         success: true
       })
+      con.end()
+      return 0
     })
   })
 }

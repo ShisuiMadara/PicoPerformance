@@ -1,11 +1,11 @@
 const mysql = require('mysql')
-//done
+// done
 async function getAll (req, res) {
   if (req.user.isAdmin == 0) {
     res.status(403).send({
       message: 'Access Denied',
       success: false
-  })
+    })
     return
   }
   const con = mysql.createConnection({
@@ -14,14 +14,14 @@ async function getAll (req, res) {
     password: 'password',
     database: 'picoperformance'
   })
-  req = req.body;
+  req = req.body
   if (!req.Search) req.Search = ''
   con.connect((err) => {
     if (err) {
       res.status(400).send({
         message: 'Datbase Error',
         success: false
-    })
+      })
       return 0
     }
     console.log('Connected!')
@@ -33,6 +33,7 @@ async function getAll (req, res) {
           message: 'Unknown Error',
           success: false
         })
+        con.end()
         return 0
       }
       res.send({
@@ -41,6 +42,8 @@ async function getAll (req, res) {
           list: result
         }
       })
+      con.end()
+      return 0
     })
   })
 }
