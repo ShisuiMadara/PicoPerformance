@@ -48,7 +48,7 @@ This serves both as:
 <h1>Usage</h1>
 <br>
 
-The website is hosted on Microsoft Azure and can be accessed from <-----------link------->. 
+The website is hosted on Microsoft Azure and can be accessed from http://picoperformance.centralindia.cloudapp.azure.com:3000/. 
 
 <ul>
   <li>Employer/Admin: 
