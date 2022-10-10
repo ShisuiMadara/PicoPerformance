@@ -73,7 +73,7 @@ The website is hosted on microsoft azure and can be accessed from <-----------li
  
  The <b>graphs</b> are of two types:
  <ul>
-  <li><b><h3>Pie Chart</h3> </b><br> There will be <b>two pie charts</b>, one for <b>current day</b> and <b>other for previous day</b>. </li>
-  <li><b><h3>Stack Chart</h3></b><br>The three parts will <b>dipict the time alloted</b> to each of the activities namely <b> Meeting, Break and Working</b>.</li>
+  <li><b><h3>Pie Chart</h3> </b><br> Of the two pie charts, <b>one is shows the data for the "current day"</b> or the selected filter range. While the second <b>one shows data for the previous day and on selecting filtering fives null value</b>.  </li>
+  <li><b><h3>Stack Chart</h3></b><br>The stack chart shows the data for the <b>whole week</b> in a stack bar graph. <b>Each bar will represent one day</b>.  Users can <b>see the data of old weeks also through the filter. ONLY END DATE IS REQUIRED in this case</b>.</li>
   </ul>
 
