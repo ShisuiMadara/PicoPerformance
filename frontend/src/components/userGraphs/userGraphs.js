@@ -202,7 +202,7 @@ export default class UserGraphs extends react.Component {
         if(this.state.filter != props.filter || this.state.user != props.user) {
             this.setState({
                 loaded: [false, false, true],
-                err: [true, true, false],
+                er: [true, true, false],
                 filter: props.filter
             })
             axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
@@ -216,7 +216,7 @@ export default class UserGraphs extends react.Component {
             }).then((response)=>{
                 if (response.data.success === true){
                     var ldd = this.state.loaded
-                    var errd = this.state.errd
+                    var errd = this.state.er
                     var datadd = this.state.data
                     ldd[0] = true
                     errd[0] = false
@@ -229,8 +229,9 @@ export default class UserGraphs extends react.Component {
                 }
             }).catch((err) =>{
                 if(err) {
+                    console.log(err)
                     var ldd = this.state.loaded
-                    var errd = this.state.errd
+                    var errd = this.state.er
                     ldd[0] = true
                     errd[0] = true
                     this.setState({
@@ -251,7 +252,7 @@ export default class UserGraphs extends react.Component {
             }).then((response)=>{
                 if (response.data.success === true){
                     var ldd = this.state.loaded
-                    var errd = this.state.errd
+                    var errd = this.state.er
                     var datadd = this.state.data
                     ldd[1] = true
                     errd[1] = false
@@ -264,8 +265,9 @@ export default class UserGraphs extends react.Component {
                 }
             }).catch((err) =>{
                 if(err) {
+                    console.log(err)
                     var ldd = this.state.loaded
-                    var errd = this.state.errd
+                    var errd = this.state.er
                     ldd[1] = true
                     errd[1] = true
                     this.setState({
