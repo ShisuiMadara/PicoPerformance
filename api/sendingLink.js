@@ -44,6 +44,15 @@ function sendMailToEmail (req, res) {
       const sent = sendEmail(email, token)
       const dataa = [[result[0].EmployeeId, email, token]]
       if (sent) {
+        con.query('DELETE FROM Tokens WHERE EmailId = "' + email + '"', function (err, result) {
+          if (err) {
+            console.log(err.message)
+            res.status(400).send({
+              message: 'Something went wrong. Kindly try again',
+              success: false
+            })
+          }
+        })
         con.query('Insert Into Tokens Values ?', [dataa], function (err, result) {
           if (err) {
             console.log(err.message)
