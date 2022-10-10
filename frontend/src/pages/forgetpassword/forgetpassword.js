@@ -43,7 +43,7 @@ export default class Fpassword extends react.Component {
             }).then((response) => {
                 if(response.status === 200 && response.data.success === true) {
                     sessionStorage.clear();
-                    window.location.replace('/dashboard');
+                    window.location.replace('/');
                 }
                 return true;
             }).catch((result) => {
