@@ -38,7 +38,6 @@ export default function CreateUser(props) {
         }
         const getDepartment = (value) => {
             value = parseInt(value);
-            console.log(value);
             if(value === 1) {
                 return 'Software Developement';
             } else if(value === 2) {
@@ -80,7 +79,7 @@ export default function CreateUser(props) {
                     if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
                         alert(response.data.message);
                     } else {
-                        alert('Unable to register user! please try later.');
+                        alert('Unable to add task! please try later.');
                     }
                 }).catch((error) => {
                     if(error.data !== null && error.data !== undefined && error.data.success === false) {
