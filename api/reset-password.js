@@ -19,6 +19,9 @@ function updatePassword (req, res) {
   const password = req.Password
   const emailId = req.EmailId
 
+  console.log(token)
+  console.log(password)
+  console.log(emailId)
   con.query('SELECT * FROM Tokens WHERE token ="' + token + '"', function (err, result) {
     if (err) throw err
 
