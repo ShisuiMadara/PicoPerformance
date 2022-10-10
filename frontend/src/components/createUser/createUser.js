@@ -8,7 +8,7 @@ import styles from "./createUser.module.css";
 export default function CreateUser(props) {
         const [submitState, setSubmit] = React.useState(false);
         var now = new Date();
-        now = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+        now = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (1 * 30 * 60 * 1000));
         var maxDate = now.toISOString().substring(0,10);
         const formArray = {
             'Name' : "text",
