@@ -9,40 +9,13 @@ async function filter (req, res) {
   })
 
   req = req.body
-
-  const d = new Date()
-  let mnth = d.getMonth() + 1
-  mnth = mnth.toString()
-  if (mnth.length === 1) mnth = '0' + mnth
-  let dayy = d.getDate().toString()
-  if (dayy.length === 1) dayy = '0' + dayy
-  let comp2 = d.getFullYear() + '-' + mnth + '-' + dayy
-
-  const sevenDaysAgo = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
-  mnth = sevenDaysAgo.getMonth() + 1
-  mnth = mnth.toString()
-  if (mnth.length === 1) mnth = '0' + mnth
-  dayy = sevenDaysAgo.getDate().toString()
-  if (dayy.length === 1) dayy = '0' + dayy
-  comp2 = sevenDaysAgo.getFullYear() + '-' + mnth + '-' + dayy
-
-  const startDate = comp2 + ' 00:00:00'
-  const endDate = comp2 + ' 23:59:59'
+  const startDate = req.EndDate + ' 00:00:00'
+  const endDate = req.EndDate + ' 23:59:59'
 
   console.log(startDate)
   console.log(endDate)
-  con.connect(async (err) => {
-    if (err) {
-      res.status(400).send({
-        success: false,
-        message: 'Datbase Error'
-      })
-      return 0
-    }
-    const x = 0
-    console.log('Connected!')
-    const resobj = {}
-    let sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Break" AND EmployeeId=' + req.EmployeeId
+  const callQuery = (Offset, resObj)=>{
+    let sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL -' + Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL -' + Offset + ' DAY) AND TaskType="Break" AND EmployeeId=' + req.EmployeeId
     con.query(sql, (err, result) => {
       if (err) {
         res.status(400).send({
@@ -52,8 +25,14 @@ async function filter (req, res) {
         con.end()
         return
       }
-      resobj.Break = result
-      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Meeting" AND EmployeeId=' + req.EmployeeId
+      var rex = [
+        {
+          Name: 'Break',
+          Count: result[0].Count,
+          Sum: (result[0].Sum ? result[0].Sum : 0)
+        }
+      ]
+      sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL -' + Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL -' + Offset + ' DAY) AND TaskType="Meeting" AND EmployeeId=' + req.EmployeeId
       con.query(sql, (err, result) => {
         if (err) {
           res.status(400).send({
@@ -63,9 +42,15 @@ async function filter (req, res) {
           con.end()
           return
         }
-        resobj.Meeting = result
-        sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL ' + req.Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL ' + req.Offset + ' DAY) AND TaskType="Work" AND EmployeeId=' + req.EmployeeId
-        con.query(sql, (err, result) => {
+        rex.push(
+          {
+            Name: 'Meeting',
+            Count: result[0].Count,
+            Sum: (result[0].Sum ? result[0].Sum : 0)
+          }
+        )
+        sql = 'SELECT Count(TimeTaken) as "Count", Sum(TimeTaken) as "Sum" FROM Tasks WHERE StartDate BETWEEN DATE_ADD("' + startDate + '",INTERVAL -' + Offset + ' DAY) AND DATE_ADD("' + endDate + '", INTERVAL -' + Offset + ' DAY) AND TaskType="Work" AND EmployeeId=' + req.EmployeeId
+        con.query(sql, (err, result) =>{
           if (err) {
             res.status(400).send({
               success: false,
@@ -74,17 +59,36 @@ async function filter (req, res) {
             con.end()
             return
           }
-          resobj.Work = result
-          res.send({
-            success: true,
-            data: {
-              StackData: resobj
+          rex.push(
+            {
+              Name: 'Work',
+              Count: result[0].Count,
+              Sum: (result[0].Sum ? result[0].Sum : 0)
             }
-          })
-          con.end()
+          )
+          resObj.push(rex)
+          if (Offset === 6){
+            return res.send({
+              success: true,
+              data:{
+                Chart: resObj
+              }
+            })
+          }
+          callQuery(Offset + 1, resObj)
         })
       })
     })
+  }
+  con.connect(async (err) => {
+    if (err) {
+      res.status(400).send({
+        success: false,
+        message: 'Datbase Error'
+      })
+      return 0
+    }
+    return callQuery(0, [])
   })
 }
 
