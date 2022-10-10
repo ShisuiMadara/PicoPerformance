@@ -47,6 +47,7 @@ function handler (req, res) {
               message: 'Query Error',
               success: false
             })
+            con.end()
             return 0
           }
           res.send({
@@ -68,6 +69,7 @@ function handler (req, res) {
             },
             success: true
           })
+          con.end()
         })
       })
     })
