@@ -1,12 +1,14 @@
+* {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+*::-webkit-scrollbar {
+    display: none !important;
+}
 .container {
     width: 100% !important;
     background-color: #F4F4F4;
     overflow-y: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-.container::-webkit-scrollbar {
-    display: none;
 }
 .loginWrapper {
     z-index: -100;

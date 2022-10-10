@@ -6,6 +6,7 @@ import Helmet from 'react-helmet';
 import styles from './App.module.css';
 import Dashboard from './pages/dashboard/dashboard';
 import Fpassword from './pages/forgetpassword/forgetpassword';
+import logo from './logo.png';
 
 class App extends Component {
   render(){
@@ -13,7 +14,7 @@ class App extends Component {
       <div className={styles.allContainer}>
       <Helmet>
         <title>PicoPerformance</title>
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href={logo} />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Helmet>
       <BrowserRouter>

@@ -51,7 +51,7 @@ const Dashboard = (props) => {
   }
   // validate user
   const userdata = JSON.parse(sessionStorage.getItem('userInfo'));
-  const usertype = '';
+  let usertype = '';
   if(userdata !== null && userdata !== undefined && userdata !== {}) {
     usertype = (JSON.parse(sessionStorage.getItem('userInfo')).IsAdmin === 1 ? 'admin' : 'employee')
   }
