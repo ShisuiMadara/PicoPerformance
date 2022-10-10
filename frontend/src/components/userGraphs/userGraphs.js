@@ -7,20 +7,17 @@ import styles from './userGraphs.module.css';
 class PieChartToday extends react.Component{
     constructor(props){
         super(props);
-        this.state = {
-            data: {}
-        }
     }
     render(){
         var er = false
-        var dt = new Date();
+        var data = {}
         axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
             "EmployeeId" : this.props.user.EmployeeId,
-            "StartDate" : (this.props.filter[0].getFullYear()) + '-' + ((this.props.filter[0].getMonth().ToString().length === 1 && this.props.filter[0].getMonth()!== 9)? '0' + (this.props.filter[0].getMonth() + 1) : (this.props.filter[0].getMonth() + 1)) + '-' + (this.props.filter[0].getDate().ToString().length === 1 ? '0' + this.props.filter[0].getDate() : this.props.filter[0].getDate()) + ' 00:00:00',
-            "EndDate": (this.props.filter[1].getFullYear()) + '-' + ((this.props.filter[1].getMonth().ToString().length === 1 && this.props.filter[1].getMonth() !== 9)? '0' + (this.props.filter[1].getMonth() + 1) : (this.props.filter[1].getMonth() + 1)) + '-' + (this.props.filter[1].getDate().ToString().length === 1 ? '0' + this.props.filter[1].getDate() : this.props.filter[1].getDate()) + ' 23:59:59'
+            "StartDate" : this.props.filter[0] + ' 00:00:00',
+            "EndDate" : this.props.filter[1] + ' 23:59:59'
         }).then((response)=>{
             if (response.data.success === true){
-                this.setState({data: response.data.data.Details})
+                data= response.data.data.Details
             }
         }).catch((err) =>{
             if(err) er = true;
@@ -81,7 +78,12 @@ class PieChartToday extends react.Component{
                 if (name === 'Break'){
                     value = value + ' minutes (' + tooltipData[0].value2 + ' Entries)'
                 }
-                else if (name == 'H')
+                else if (name == 'Meeting'){
+                    value = value + ' minutes (' + tooltipData[1].value2 + ' Entries)'
+                }
+                else{
+                    value = value + ' minutes (' + tooltipData[2].value2 + ' Entries)'
+                }
                 return [value, name]
               }} />
               <Legend />
@@ -93,29 +95,22 @@ class PieChartToday extends react.Component{
 class PieChartYesterDay extends react.Component{
     constructor(props){
         super(props);
-        this.state = {
-            data: {}
-        }
     }
     render(){
+        var data = {}
         var er = false
-        var dt = new Date();
-        this.props.filter[0].setDate(this.props.filter[0].getDate() - 1);
-        this.props.filter[1].setDate(this.props.filter[1].getDate() - 1);
-        const StartDate = (this.props.filter[0].getFullYear()) + '-' + ((this.props.filter[0].getMonth().ToString().length === 1 && this.props.filter[0].getMonth()!== 9)? '0' + (this.props.filter[0].getMonth() + 1) : (this.props.filter[0].getMonth() + 1)) + '-' + (this.props.filter[0].getDate().ToString().length === 1 ? '0' + this.props.filter[0].getDate() : this.props.filter[0].getDate());
-        const EndDate = (this.props.filter[1].getFullYear()) + '-' + ((this.props.filter[1].getMonth().ToString().length === 1 && this.props.filter[1].getMonth() !== 9)? '0' + (this.props.filter[1].getMonth() + 1) : (this.props.filter[1].getMonth() + 1)) + '-' + (this.props.filter[1].getDate().ToString().length === 1 ? '0' + this.props.filter[1].getDate() : this.props.filter[1].getDate());
-        if (StartDate != EndDate){
+        if (this.props.filter[0] != this.props.filter[1]){
             return(
                 <text>Chart is not availabe when filter spans more than 1 date</text>
             )
         }
         axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
             "EmployeeId" : this.props.user.EmployeeId,
-            "StartDate" : StartDate + '00:00:00',
-            "EndDate": EndDate + '23:59:59'
+            "StartDate" : this.props.filter[0] + ' 00:00:00',
+            "EndDate": this.props.filter[1] + ' 23:59:59'
         }).then((response)=>{
             if (response.data.success === true){
-                this.setState({data: response.data.data.Details})
+                data: response.data.data.Details
             }
         }).catch((err) =>{
             if(err) er = true;
@@ -176,7 +171,12 @@ class PieChartYesterDay extends react.Component{
                 if (name === 'Break'){
                     value = value + ' minutes (' + tooltipData[0].value2 + ' Entries)'
                 }
-                else if (name == 'H')
+                else if (name == 'Meeting'){
+                    value = value + ' minutes (' + tooltipData[1].value2 + ' Entries)'
+                }
+                else{
+                    value = value + ' minutes (' + tooltipData[2].value2 + ' Entries)'
+                }
                 return [value, name]
               }} />
               <Legend />
@@ -185,18 +185,18 @@ class PieChartYesterDay extends react.Component{
     }
 }
 
-class StackedChart extends react.Component{
-    constructor(props){
-        super(props);
-        this.state={
-            data:{}
-        }
-    }
-    render(){
-        var er = false;
+// class StackedChart extends react.Component{
+//     constructor(props){
+//         super(props);
+//         this.state={
+//             data:{}
+//         }
+//     }
+//     render(){
+//         var er = false;
 
-    }
-}
+//     }
+// }
 
 export default class UserGraphs extends react.Component {
     constructor(props) {

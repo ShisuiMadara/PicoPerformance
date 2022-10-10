@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-//done
+// done
 async function getAllTasks (req, res) {
   const con = mysql.createConnection({
     host: 'localhost',
@@ -21,10 +21,10 @@ async function getAllTasks (req, res) {
       return 0
     }
     console.log('Connected!')
-    var sql = 'SELECT * FROM Tasks WHERE EmployeeId = "' + find + '"'
-    if (isSearch){ sql = sql + ' AND StartDate BETWEEN "' + req.StartDate + '" AND "' + req.EndDate + '"' }
+    let sql = 'SELECT * FROM Tasks WHERE EmployeeId = "' + find + '"'
+    if (isSearch) { sql = sql + ' AND StartDate BETWEEN "' + req.StartDate + '" AND "' + req.EndDate + '"' }
     console.log(sql)
-    
+
     con.query(sql, function (erro, result) {
       if (erro) {
         res.status(400).send({
@@ -39,7 +39,7 @@ async function getAllTasks (req, res) {
           success: false
         })
       }
-      console.log('Number of records inserted: ' + result.affectedRows)
+
       res.send({
         success: true,
         data: {
