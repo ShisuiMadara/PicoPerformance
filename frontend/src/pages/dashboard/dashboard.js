@@ -57,8 +57,8 @@ const Dashboard = (props) => {
   // default ui for admin
   let locations = {
     Home:                       [ "", "/"],
-    "Manage Employees":         [ "", <ATasks />],
-    "Create Employee":              [ "", <CreateUser />],
+    "Manage Employees":         [ "", <ATasks token={userdata.token}/>],
+    "Create Employee":              [ "", <CreateUser token={userdata.token} />],
     "Profile":                  [ "", <Profile userdata={userdata} />],
     Logout:                     [ "", "Logout"],
   };
@@ -66,9 +66,9 @@ const Dashboard = (props) => {
     // changed ui for employee
     locations = {
       Home:           [ "", "/"],
-      "Tasks":        [ "", <UTasks />],
+      "Tasks":        [ "", <UTasks token={userdata.token} />],
       "Profile":      [ "", <Profile userdata={userdata} />],
-      "Create Task":              ["", <CreateTasks />],
+      "Create Task":              ["", <CreateTasks token={userdata.token} EmployeeId={userdata.EmployeeId}/>],
       Logout:         [ "", "Logout"],
     };
   };
