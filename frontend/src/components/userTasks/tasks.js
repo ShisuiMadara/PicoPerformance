@@ -282,7 +282,7 @@ export default class UTasks extends react.Component {
           if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
             this.setState({
                 tasks: response.data.data.Tasks,
-                currentTasks: response.data.data.Tasks
+                currentTasks: response.data.data.Tasks.slice(0, 5)
               })
           } else {
               alert('Unable to fetch tasks! please try later.');
