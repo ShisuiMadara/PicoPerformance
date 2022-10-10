@@ -21,6 +21,7 @@ import axios from 'axios';
 import styles from "./tasks.module.css";
 
 export default class UTasks extends react.Component {
+  initial = '';
   handleStartDateChange = (newValue) => {
     this.setState({
         valueDateStart: newValue
@@ -30,12 +31,13 @@ export default class UTasks extends react.Component {
     this.setState({
       valueDateEnd: newValue
     });
-};
+  };
   changeFilter = (event) => {
     if(event.target.value === 'Select Filter') {
       this.setState({
         filter: event.target.value,
-        currentTasks: this.state.tasks
+        currentTasks: this.state.tasks,
+        filterData: [this.initial, this.initial]
       });
     } else {
       this.setState({
@@ -58,7 +60,6 @@ export default class UTasks extends react.Component {
       currentTasks: tasks,
     });
   };
-  const
 
   filterDate = (event) => {
     event.preventDefault();
@@ -78,8 +79,9 @@ export default class UTasks extends react.Component {
     }).then((response) => {
         if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
           this.setState({
-              currentTasks: response.data.data.Tasks
-            })
+              currentTasks: response.data.data.Tasks,
+              filterData: [startDate, endDate]
+            });
         } else {
             alert('Unable to fetch tasks! please try later.');
         }
@@ -96,7 +98,7 @@ export default class UTasks extends react.Component {
     super(props);
     var now = new Date();
     now = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (1 * 30 * 60 * 1000));
-    const initial = dayjs(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}T00:00:00`);
+    this.initial = now.toISOString().substring(0,10);
     const userData = JSON.parse(sessionStorage.getItem("userInfo"));
     this.state = {
       filter: "Select Filter",
@@ -104,10 +106,9 @@ export default class UTasks extends react.Component {
       tasks: [],
       currentTasks: [],
       page: 1,
-      filterData: [now, now],
-      currentDate: now,
-      valueDateStart: initial,
-      valueDateEnd: initial
+      filterData: [this.initial, this.initial],
+      valueDateStart: this.initial,
+      valueDateEnd: this.initial
     };
   }
 
@@ -199,13 +200,12 @@ export default class UTasks extends react.Component {
           this.state.selectedUser === "Select User" ? (
             <></>
           ) : (
-            <></>
-            // <Grid item xs={12}>
-            //   <UserGraphs
-            //     user={this.state.user}
-            //     filter={this.state.filterData}
-            //   />
-            // </Grid>
+            <Grid item xs={12} sx={{textAlign: 'center'}} alignContent={'center'} alignItems={'center'}>
+              <UserGraphs
+                user={this.state.user}
+                filter={this.state.filterData}
+              />
+            </Grid>
           )}
 
           <Grid item xs={12}>
