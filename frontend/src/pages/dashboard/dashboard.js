@@ -51,17 +51,14 @@ const Dashboard = (props) => {
   }
   // validate user
   const userdata = JSON.parse(sessionStorage.getItem('userInfo'));
-  const usertype = (JSON.parse(sessionStorage.getItem('userInfo')).IsAdmin === 1 ? 'admin' : 'employee');
+  const usertype = '';
+  if(userdata !== null && userdata !== undefined && userdata !== {}) {
+    usertype = (JSON.parse(sessionStorage.getItem('userInfo')).IsAdmin === 1 ? 'admin' : 'employee')
+  }
 
   // define dashboard tabs
   // default ui for admin
-  let locations = {
-    Home:                       [ "", "/"],
-    "Manage Employees":         [ "", <ATasks token={userdata.token}/>],
-    "Create Employee":              [ "", <CreateUser token={userdata.token} />],
-    "Profile":                  [ "", <Profile userdata={userdata} />],
-    Logout:                     [ "", "Logout"],
-  };
+  let locations = null;
   if(usertype === 'employee') {
     // changed ui for employee
     locations = {
@@ -71,19 +68,26 @@ const Dashboard = (props) => {
       "Create Task":              ["", <CreateTasks token={userdata.token} EmployeeId={userdata.EmployeeId}/>],
       Logout:         [ "", "Logout"],
     };
-  };
-  const [location, setLocation] = React.useState(Object.keys(locations)[1]);
-
+  } else if(usertype === 'admin') {
+    locations = {
+      Home:                       [ "", "/"],
+      "Manage Employees":         [ "", <ATasks token={userdata.token}/>],
+      "Create Employee":              [ "", <CreateUser token={userdata.token} />],
+      "Profile":                  [ "", <Profile userdata={userdata} />],
+      Logout:                     [ "", "Logout"],
+    };
+  }
+  const [location, setLocation] = React.useState(locations !== null ? Object.keys(locations)[1] : 'invalid');
+  if(allowAccess === false || location == 'invalid') {
+    sessionStorage.clear();
+    window.location.replace('/404');
+    return (<>Invalid Access!</>);
+  }
   if(allowAccess === null) {
     validate();
     return (
       <>Validating... please wait!</>
     );
-  }
-  else if(allowAccess === false) {
-    sessionStorage.clear();
-    window.location.replace('/404');
-    return (<>Invalid Access!</>);
   }
   // set variables and hooks
   const Theme = createTheme({
