@@ -8,6 +8,7 @@ function handler (req, res) {
     database: 'picoperformance'
   })
   req = req.body
+  
   con.connect(async (err) => {
     if (err) {
       res.status(400).send({

@@ -24,15 +24,15 @@ class PieChartToday extends react.Component{
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
         const chartData = [
             {
-                "name" : "Break Time",
+                "name" : "Break",
                 "value" : this.props.data.Break.Sum == null ? 0 : this.props.data.Break.Sum
             },
             {
-                "name" : "Meeting Time",
+                "name" : "Meeting",
                 "value" : this.props.data.Meeting.Sum == null ? 0 : this.props.data.Meeting.Sum
             },
             {
-                "name" : "Work Time",
+                "name" : "Work",
                 "value" : this.props.data.Work.Sum == null ? 0 : this.props.data.Work.Sum
             }
         ]
@@ -53,6 +53,7 @@ class PieChartToday extends react.Component{
                 "value2" : this.props.data.Work.Count
             }
         ]
+        console.log(tooltipData)
         return (
             <PieChart width={400} height={400}>
               <Pie
@@ -112,15 +113,15 @@ class PieChartYesterDay extends react.Component{
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
         const chartData = [
             {
-                "name" : "Break Time",
+                "name" : "Break",
                 "value" : this.props.data.Break.Sum == null ? 0 : this.props.data.Break.Sum
             },
             {
-                "name" : "Meeting Time",
+                "name" : "Meeting",
                 "value" : this.props.data.Meeting.Sum == null ? 0 : this.props.data.Meeting.Sum
             },
             {
-                "name" : "Work Time",
+                "name" : "Work",
                 "value" : this.props.data.Work.Sum == null ? 0 : this.props.data.Work.Sum
             }
         ]
