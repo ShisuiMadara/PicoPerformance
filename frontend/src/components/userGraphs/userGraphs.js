@@ -185,18 +185,18 @@ class PieChartYesterDay extends react.Component{
     }
 }
 
-class StackedChart extends react.Component{
-    constructor(props){
-        super(props);
-        this.state={
-            data:{}
-        }
-    }
-    render(){
-        var er = false;
+// class StackedChart extends react.Component{
+//     constructor(props){
+//         super(props);
+//         this.state={
+//             data:{}
+//         }
+//     }
+//     render(){
+//         var er = false;
 
-    }
-}
+//     }
+// }
 
 export default class UserGraphs extends react.Component {
     constructor(props) {
