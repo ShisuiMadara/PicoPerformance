@@ -91,7 +91,7 @@ export default function CreateTasks(props) {
                     Authorization: `Bearer ${props.token}`
                 }
             }).then((response) => {
-                if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                if(response.status === 200 && response.data !== null && response.data !== undefined && response.data.success === true) {
                     alert(response.data.message);
                 } else {
                     alert('Unable to register user! please try later.');

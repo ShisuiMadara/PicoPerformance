@@ -12,7 +12,6 @@ import {
 import react from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { DatePicker } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import UserGraphs from "../userGraphs/userGraphs";
@@ -34,10 +33,30 @@ export default class UTasks extends react.Component {
   };
   changeFilter = (event) => {
     if(event.target.value === 'Select Filter') {
-      this.setState({
-        filter: event.target.value,
-        currentTasks: this.state.tasks,
-        filterData: [this.initial, this.initial]
+      axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/getAllTasks', {
+        Search: false,
+        EmployeeId: this.props.EmployeeId,
+      }, {
+          headers: {
+              Authorization: `Bearer ${this.props.token}`
+          }
+      }).then((response) => {
+          if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+            this.setState({
+                tasks: response.data.data.Tasks,
+                currentTasks: response.data.data.Tasks.slice(0, 5),
+                filter: event.target.value,
+                filterData: [this.initial, this.initial]
+              });
+          } else {
+              alert('Unable to fetch tasks! please try later.');
+          }
+      }).catch((error) => {
+          if(error.data !== null && error.data !== undefined && error.data.success === false) {
+              alert(error.data.message);
+          } else {
+              alert('Server error!');
+          }
       });
     } else {
       this.setState({
@@ -48,11 +67,7 @@ export default class UTasks extends react.Component {
 
   changePage = (event, value) => {
     var tasks = [];
-    for (
-      var i = 5 * (value - 1);
-      i < 5 * value && i < this.state.tasks.length;
-      i++
-    ) {
+    for (var i = 5 * (value - 1); i < 5 * value && i < this.state.tasks.length; i++) {
       tasks.push(this.state.tasks[i]);
     }
     this.setState({
@@ -79,7 +94,8 @@ export default class UTasks extends react.Component {
     }).then((response) => {
         if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
           this.setState({
-              currentTasks: response.data.data.Tasks,
+              tasks: response.data.data.Tasks,
+              currentTasks: response.data.data.Tasks.slice(0, 5),
               filterData: [startDate, endDate]
             });
         } else {

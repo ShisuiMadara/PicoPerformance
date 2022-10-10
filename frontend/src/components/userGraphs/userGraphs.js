@@ -199,7 +199,7 @@ export default class UserGraphs extends react.Component {
         }
     }
     componentWillReceiveProps(props) {
-        if(this.state.filter != props.filter) {
+        if(this.state.filter != props.filter || this.state.user != props.user) {
             this.setState({
                 loaded: false,
                 err: true,

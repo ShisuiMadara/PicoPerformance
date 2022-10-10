@@ -3,45 +3,149 @@ import react from 'react';
 import CollapsibleTable from '../taskTable/CollapsibleTable';
 import SearchIcon from '@mui/icons-material/Search';
 import UserGraphs from '../userGraphs/userGraphs';
+import { DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import axios from 'axios';
 
 import styles from './tasks.module.css';
 
 export default class ATasks extends react.Component {
+    initial = '';
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log(event);
         const email = event.target.email.value;
         event.target.email.value = '';
-        var recievedData = [];
-        // update tasks
-        this.setState({
-            users: recievedData
+        axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/listEmployees', {
+            Search: email
+        }, {
+            headers: {
+                Authorization: `Bearer ${this.props.token}`
+            }
+        }).then((response) => {
+            if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                this.setState({
+                    users: response.data.data.list,
+                    selectedUser: 'Select User',
+                })
+            } else {
+                alert('Unable to fetch user! please try later.');
+            }
+        }).catch((error) => {
+            if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                alert(error.data.message);
+            } else {
+                alert('Server error!');
+            }
         });
+
     }
     changeFilter = (event) => {
-        this.setState({
-            filter: event.target.value
-        });
-    }
+        if(event.target.value === 'Select Filter') {
+          axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/getAllTasks', {
+            Search: false,
+            EmployeeId: this.state.users[this.state.selectedUser].EmployeeId,
+          }, {
+              headers: {
+                  Authorization: `Bearer ${this.props.token}`
+              }
+          }).then((response) => {
+              if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                this.setState({
+                    tasks: response.data.data.Tasks,
+                    currentTasks: response.data.data.Tasks.slice(0, 5),
+                    filter: event.target.value,
+                    filterData: [this.initial, this.initial]
+                  });
+              } else {
+                  alert('Unable to fetch tasks! please try later.');
+              }
+          }).catch((error) => {
+              if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                  alert(error.data.message);
+              } else {
+                  alert('Server error!');
+              }
+          });
+        } else {
+          this.setState({
+            filter: event.target.value,
+          });
+        }
+    };
     changeUser = (event) => {
         if(typeof event.target.value === 'string' && event.target.value === 'Select User') {
             this.setState({
-                filter: 'Select Filter'
+                filter: 'Select Filter',
+                selectedUser: 'Select User',
+                tasks: {},
+                currentTasks: {}
             });
+            return false;
         }
-        this.setState({
-            selectedUser: event.target.value,
-            page: 0
+        axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/getAllTasks', {
+            Search: false,
+            EmployeeId: this.state.users[event.target.value].EmployeeId
+        }, {
+            headers: {
+                Authorization: `Bearer ${this.props.token}`
+            }
+        }).then((response) => {
+            if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                this.setState({
+                    tasks: response.data.data.Tasks,
+                    currentTasks: response.data.data.Tasks.slice(0, 5),
+                    selectedUser: event.target.value,
+                    filter: 'Select Filter'
+                })
+            } else {
+                alert('Unable to fetch tasks! please try later.');
+                this.setState({
+                    selectedUser: 'Select User',
+                    filter: 'Select Filter'
+                })
+            }
+        }).catch((error) => {
+            if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                alert(error.data.message);
+                this.setState({
+                    selectedUser: 'Select User',
+                    filter: 'Select Filter'
+                })
+            } else {
+                alert('Server error!');
+                this.setState({
+                    selectedUser: 'Select User',
+                    filter: 'Select Filter'
+                })
+            }
         });
     }
     toggleUserState = (event) => {
         // send request
-
-        // update localdata
-        let userData = this.state.users;
-        userData[this.state.selectedUser].IsBlocked = !userData[this.state.selectedUser].IsBlocked;
-        this.setState({
-            users: userData
+        axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/block', {
+            Block: !this.state.users[this.state.selectedUser].IsBlocked,
+            EmailId: this.state.users[this.state.selectedUser].EmailId
+        }, {
+            headers: {
+                Authorization: `Bearer ${this.props.token}`
+            }
+        }).then((response) => {
+            if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                let userData = this.state.users;
+                userData[this.state.selectedUser].IsBlocked = !userData[this.state.selectedUser].IsBlocked;
+                this.setState({
+                    users: userData
+                })
+            } else {
+                alert('Unable to update status! please try later.');
+            }
+        }).catch((error) => {
+            if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                alert(error.data.message);
+            } else {
+                alert('Server error!');
+            }
         });
 
     }
@@ -55,12 +159,54 @@ export default class ATasks extends react.Component {
             currentTasks: tasks
         });
     }
+    handleStartDateChange = (newValue) => {
+        this.setState({
+            valueDateStart: newValue
+        });
+    };
+    handleEndDateChange = (newValue) => {
+        this.setState({
+            valueDateEnd: newValue
+        });
+    };
     filterDate = (event) => {
         event.preventDefault();
-        console.log(event);
-    }
+        var startDate = event.target.startDate.value;
+        startDate = `${startDate.slice(6, 11)}-${startDate.slice(0, 2)}-${startDate.slice(3, 5)} 00:00:00`;
+        var endDate = event.target.endDate.value;
+        endDate = `${endDate.slice(6, 11)}-${endDate.slice(0, 2)}-${endDate.slice(3, 5)} 23:59:59`;
+        axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/getAllTasks', {
+          Search: true,
+          EmployeeId: this.state.users[this.state.selectedUser].EmployeeId,
+          StartDate: startDate,
+          EndDate: endDate
+        }, {
+            headers: {
+                Authorization: `Bearer ${this.props.token}`
+            }
+        }).then((response) => {
+            if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+              this.setState({
+                    tasks: response.data.data.Tasks,
+                    currentTasks: response.data.data.Tasks.slice(0, 5),
+                    filterData: [startDate, endDate]
+                });
+            } else {
+                alert('Unable to fetch tasks! please try later.');
+            }
+        }).catch((error) => {
+            if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                alert(error.data.message);
+            } else {
+                alert('Server error!');
+            }
+        });
+      };
     constructor(props) {
         super(props);
+        var now = new Date();
+        now = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (1 * 30 * 60 * 1000));
+        this.initial = now.toISOString().substring(0,10);
         this.state = {
             tasks:  [],
             currentTasks: [],
@@ -68,7 +214,9 @@ export default class ATasks extends react.Component {
             filter: "Select Filter",
             selectedUser: 'Select User',
             page: 1,
-            filterData: []
+            filterData: [this.initial, this.initial],
+            valueDateStart: this.initial,
+            valueDateEnd: this.initial
         };
     }
     render() {
@@ -114,10 +262,28 @@ export default class ATasks extends react.Component {
                     <form onSubmit={this.filterDate}>
                         <Grid container spacing={0.5} sx={{display: 'flex'}} alignContent={"center"} alignItems={"center"}>
                             <Grid item xs={12} md={5}>
-                                <TextField name='startDate' type='date' sx={{width: "100%"}} label='From' variant="outlined" focused />
-                            </Grid>
-                            <Grid item xs={12} md={5}>
-                                <TextField name='endDate' type='date' sx={{width: "100%"}} label='To' variant="outlined" focused />
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                    label="startDate"
+                                    className={styles.profileInput}
+                                    value={this.state.valueDateStart}
+                                    onChange={this.handleStartDateChange}
+                                    disableFuture={true}
+                                    renderInput={(params) => <TextField id='startDate' name='startDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
+                                    />
+                                </LocalizationProvider>
+                                </Grid>
+                                <Grid item xs={12} md={5}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                    label="endDate"
+                                    className={styles.profileInput}
+                                    value={this.state.valueDateEnd}
+                                    onChange={this.handleEndDateChange}
+                                    disableFuture={true}
+                                    renderInput={(params) => <TextField id='endDate' name='endDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
+                                    />
+                                </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12} md={2}>
                                 <Button sx={{width: '100%', textAlign: 'center', padding: 2}} variant="contained" type='submit'>
@@ -184,9 +350,12 @@ export default class ATasks extends react.Component {
                         {/* white space */}
                     </Grid>
                     {
-                        ((typeof this.state.selectedUser === 'string') && this.state.selectedUser === 'Select User') ? (<></>) : (
-                            <Grid item xs={12}>
-                                <UserGraphs user={this.state.users[this.state.selectedUser]} filter={this.state.filterData} />
+                        (((typeof this.state.selectedUser === 'string') && this.state.selectedUser === 'Select User') || this.state.tasks.length === 0) ? (<></>) : (
+                            <Grid item xs={12} sx={{textAlign: 'center'}} alignContent={'center'} alignItems={'center'}>
+                                <UserGraphs
+                                    user={this.state.users[this.state.selectedUser]}
+                                    filter={this.state.filterData}
+                                />
                             </Grid>
                         )
                     }
@@ -221,7 +390,31 @@ export default class ATasks extends react.Component {
         );
     }
     componentDidMount() {
-        if(this.state.tasks.length !== 0) {
+        if(this.state.users.length === 0) {
+            axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/listEmployees', {
+                Search: ''
+            }, {
+                headers: {
+                    Authorization: `Bearer ${this.props.token}`
+                }
+            }).then((response) => {
+                if(response.status === 200 && response.data !== null && response.data != undefined && response.data.success === true) {
+                    for(var i = 0; i < response.data.data.list.length; i++){
+                        response.data.data.list[i]['token'] = this.props.token;
+                    }
+                    this.setState({
+                        users: response.data.data.list
+                    })
+                } else {
+                    alert('Unable to fetch user! please try later.');
+                }
+            }).catch((error) => {
+                if(error.data !== null && error.data !== undefined && error.data.success === false) {
+                    alert(error.data.message);
+                } else {
+                    alert('Server error!');
+                }
+            });
             this.changePage(null, 1);
         }
     }
