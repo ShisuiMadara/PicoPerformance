@@ -5,6 +5,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const dotenv = require('dotenv')
+const mysql = require('mysql')
 // load env variables
 dotenv.config()
 // configure server for logging.
@@ -19,6 +20,12 @@ app.use((req, res, next) => {
     next()
     return
   }
+  const con = mysql.createConnection({
+    host: 'localhost',
+    user: 'pico',
+    password: 'password',
+    database: 'picoperformance'
+  })
   let token = req.header('Authorization')
   if (!token) {
     return res.status(401).send({
