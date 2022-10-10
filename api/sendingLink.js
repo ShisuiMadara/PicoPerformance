@@ -7,8 +7,8 @@ async function sendEmail (email, token) {
     host: 'smtp.mailgun.org',
     port: 587,
     auth: {
-      user: 'postmaster@sandboxdeed5c321f4b4978a28591a344e75fca.mailgun.org',
-      pass: '1d44e38354a64d4c0a4c6da9ccbab793-381f2624-5d0adc01'
+      user: process.env.user,
+      pass: process.env.pass
     }
   })
 
@@ -16,7 +16,7 @@ async function sendEmail (email, token) {
     from: 'picoPerformance@gmail.com',
     to: email,
     subject: 'Reset Password Link - picoPerformance',
-    html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/reset-password?token=' + token + '">link</a> to reset your password</p>'
+    html: '<p>You requested for reset password, kindly use this <a href="http://picoperformance.centralindia.cloudapp.azure.com:3000/reset-password?token=' + token + '">link</a> to reset your password</p>'
   })
 
   console.log('Message sent: %s', info.messageId)
