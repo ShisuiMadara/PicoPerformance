@@ -12,8 +12,6 @@ import styles from './tasks.module.css';
 
 export default class ATasks extends react.Component {
     initial = '';
-    valueDateStart = '';
-    valueDateEnd = '';
     handleSubmit = (event) => {
         event.preventDefault();
         const email = event.target.email.value;
@@ -162,10 +160,14 @@ export default class ATasks extends react.Component {
         });
     }
     handleStartDateChange = (newValue) => {
-        this.valueDateStart = newValue
+        this.setState({
+            valueDateStart : newValue
+        });
     };
     handleEndDateChange = (newValue) => {
-        this.valueDateEnd = newValue
+        this.setState({
+            valueDateEnd : newValue
+        });
     };
     filterDate = (event) => {
         event.preventDefault();
@@ -205,9 +207,9 @@ export default class ATasks extends react.Component {
         var now = new Date();
         now = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (1 * 30 * 60 * 1000));
         this.initial = now.toISOString().substring(0,10);
-        this.valueDateStart = this.initial;
-        this.valueDateEnd = this.initial;
         this.state = {
+            valueDateStart : this.initial,
+            valueDateEnd : this.initial,
             tasks:  [],
             currentTasks: [],
             users:  [],
@@ -264,7 +266,7 @@ export default class ATasks extends react.Component {
                                     <DatePicker
                                     label="startDate"
                                     className={styles.profileInput}
-                                    value={this.valueDateStart}
+                                    value={this.state.valueDateStart}
                                     onChange={this.handleStartDateChange}
                                     disableFuture={true}
                                     renderInput={(params) => <TextField id='startDate' name='startDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
@@ -276,7 +278,7 @@ export default class ATasks extends react.Component {
                                     <DatePicker
                                     label="endDate"
                                     className={styles.profileInput}
-                                    value={this.valueDateEnd}
+                                    value={this.state.valueDateEnd}
                                     onChange={this.handleEndDateChange}
                                     disableFuture={true}
                                     renderInput={(params) => <TextField id='endDate' name='endDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}

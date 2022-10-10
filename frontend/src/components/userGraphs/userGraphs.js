@@ -367,7 +367,7 @@ export default class UserGraphs extends react.Component {
             })
             axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/stackChart', {
                 "EmployeeId" : props.user.EmployeeId,
-                "EndDate": props.filter[1],                
+                "EndDate": props.filter[1].slice(0,10),                
             },{
                 headers: {
                     Authorization: `Bearer ${props.user.token}`

@@ -21,13 +21,15 @@ import styles from "./tasks.module.css";
 
 export default class UTasks extends react.Component {
   initial = '';
-  valueDateStart = '';
-  valueDateEnd = '';
   handleStartDateChange = (newValue) => {
-    this.valueDateStart = newValue;
+    this.setState({
+      valueDateStart : newValue
+    });
   };
   handleEndDateChange = (newValue) => {
-    this.valueDateEnd = newValue;
+    this.setState({
+      valueDateEnd : newValue
+    });
   };
   changeFilter = (event) => {
     if(event.target.value === 'Select Filter') {
@@ -114,8 +116,6 @@ export default class UTasks extends react.Component {
     now = new Date(now.getTime() + (5 * 60 * 60 * 1000) + (1 * 30 * 60 * 1000));
     this.initial = now.toISOString().substring(0,10);
     const userData = JSON.parse(sessionStorage.getItem("userInfo"));
-    this.valueDateStart= this.initial;
-    this.valueDateEnd = this.initial;
     this.state = {
       filter: "Select Filter",
       user: userData,
@@ -123,6 +123,8 @@ export default class UTasks extends react.Component {
       currentTasks: [],
       page: 1,
       filterData: [this.initial, this.initial],
+      valueDateEnd : this.initial,
+      valueDateStart : this.initial
     };
   }
 
@@ -169,7 +171,7 @@ export default class UTasks extends react.Component {
                         <DatePicker
                           label="startDate"
                           className={styles.profileInput}
-                          value={this.valueDateStart}
+                          value={this.state.valueDateStart}
                           onChange={this.handleStartDateChange}
                           disableFuture={true}
                           renderInput={(params) => <TextField id='startDate' name='startDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
@@ -181,7 +183,7 @@ export default class UTasks extends react.Component {
                         <DatePicker
                           label="endDate"
                           className={styles.profileInput}
-                          value={this.valueDateEnd}
+                          value={this.state.valueDateEnd}
                           onChange={this.handleEndDateChange}
                           disableFuture={true}
                           renderInput={(params) => <TextField id='endDate' name='endDate' variant="outlined" focused sx={{display: 'flex', width: '100%'}} {...params} />}
