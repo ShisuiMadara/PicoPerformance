@@ -27,7 +27,7 @@ class PieChartToday extends react.Component{
         })
         if (er){
             return(
-                <Text>Chart Cannot Be displayed!</Text>
+                <text>Chart Cannot Be displayed!</text>
             )
         }
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -73,7 +73,7 @@ class PieChartToday extends react.Component{
                 fill="#8884d8"
                 dataKey="value"
               >
-                {data.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -106,7 +106,7 @@ class PieChartYesterDay extends react.Component{
         const EndDate = (this.props.filter[1].getFullYear()) + '-' + ((this.props.filter[1].getMonth().ToString().length === 1 && this.props.filter[1].getMonth() !== 9)? '0' + (this.props.filter[1].getMonth() + 1) : (this.props.filter[1].getMonth() + 1)) + '-' + (this.props.filter[1].getDate().ToString().length === 1 ? '0' + this.props.filter[1].getDate() : this.props.filter[1].getDate());
         if (StartDate != EndDate){
             return(
-                <Text>Chart is not availabe when filter spans more than 1 date</Text>
+                <text>Chart is not availabe when filter spans more than 1 date</text>
             )
         }
         axios.post('http://picoperformance.centralindia.cloudapp.azure.com:5000/api/piechart', {
@@ -122,7 +122,7 @@ class PieChartYesterDay extends react.Component{
         })
         if (er){
             return(
-                <Text>Chart Cannot Be displayed!</Text>
+                <text>Chart Cannot Be displayed!</text>
             )
         }
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -168,7 +168,7 @@ class PieChartYesterDay extends react.Component{
                 fill="#8884d8"
                 dataKey="value"
               >
-                {data.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -194,7 +194,7 @@ class StackedChart extends react.Component{
     }
     render(){
         var er = false;
-        
+
     }
 }
 
