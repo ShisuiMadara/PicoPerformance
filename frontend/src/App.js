@@ -5,6 +5,7 @@ import NoPage from "./pages/nopage/nopage";
 import Helmet from 'react-helmet';
 import styles from './App.module.css';
 import Dashboard from './pages/dashboard/dashboard';
+import Fpassword from './pages/forgetpassword/forgetpassword';
 
 class App extends Component {
   render(){
@@ -21,6 +22,7 @@ class App extends Component {
           <Route index element={<Home />} />
           <Route path='home' element={<Home />} />
           <Route path='dashboard' element={<Dashboard />} />
+          <Route path='reset-password' element={<Fpassword />} />
           <Route path='*' element={<NoPage />} />
         </Route>
       </Routes>
